@@ -1,6 +1,18 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+import { AppProps } from "next/app";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { theme } from "../lib/theme/theme";
+import Layout from "@/components/layouts/Layout";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+function App({ Component, pageProps }: AppProps) {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </ThemeProvider>
+  );
 }
+
+export default App;
