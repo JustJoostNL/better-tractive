@@ -7,9 +7,9 @@ export interface IUserResponse {
   membership_type: string;
   referral_bonus_type: string;
   guid: string;
-  details: Details;
+  details: TrackableObjectDetails;
   demographics: Demographics;
-  settings: Settings;
+  settings: UserSettings;
   invoice_address: InvoiceAddress;
   shelter: unknown;
   profile_pictures: string[];
@@ -32,7 +32,7 @@ export interface Demographics {
   _type: string;
 }
 
-export interface Details {
+export interface TrackableObjectDetails {
   _id: string;
   _version: string;
   first_name: string;
@@ -60,7 +60,7 @@ export interface InvoiceAddress {
   state: string | null;
 }
 
-export interface Settings {
+export interface UserSettings {
   _id: string;
   _version: string;
   email: string;
@@ -73,14 +73,14 @@ export interface Settings {
   distance_unit: string;
   weight_unit: string;
   badge_celebrations_disabled: boolean | null;
-  mail_settings: SettingsClass;
-  push_settings: SettingsClass;
-  web_push_settings: SettingsClass;
+  mail_settings: UserSettingsClass;
+  push_settings: UserSettingsClass;
+  web_push_settings: UserSettingsClass;
   push_sound_settings: null;
   _type: string;
 }
 
-export interface SettingsClass {
+export interface UserSettingsClass {
   _id: string;
   _version: string;
   user_registered?: boolean;
@@ -107,9 +107,6 @@ export interface IAuthTokenResponse {
   user_id?: string;
   client_id?: string;
   expires_at?: number;
-  /*
-   - Tokens are valid for 1 week
-  */
   access_token?: string;
   //error
   code?: number;
@@ -124,4 +121,149 @@ export interface ObjectItem {
   _id: string;
   _type: string;
   _version: string;
+}
+
+export interface ITrackerResponse {
+  _id: string;
+  _version: string;
+  hw_id: string;
+  model_number: string;
+  hw_edition: string;
+  bluetooth_mac: null;
+  geofence_sensitivity: string;
+  battery_save_mode: null;
+  read_only: boolean;
+  read_only_since: number;
+  demo: boolean;
+  self_test_available: boolean;
+  capabilities: string[];
+  supported_geofence_types: string[];
+  fw_version: string;
+  state: string;
+  state_reason: string;
+  charging_state: string;
+  battery_state: string;
+  power_saving_zone_id: string;
+  prioritized_zone_id: string;
+  prioritized_zone_type: string;
+  prioritized_zone_last_seen_at: number;
+  prioritized_zone_entered_at: number;
+  _type: string;
+}
+
+export interface ITrackableObjectResponse {
+  _id: string;
+  _version: string;
+  type: string;
+  leaderboard_opt_out: boolean;
+  device_id: string;
+  _type: string;
+  details: TrackableObjectDetails;
+  read_only: boolean;
+  created_at: number;
+}
+
+export interface TrackableObjectDetails {
+  name: string;
+  pet_type: string;
+  breed_ids: string[];
+  gender: string;
+  birthday: number;
+  profile_picture_frame: string | null;
+  height: number | null;
+  weight: number | null;
+  chip_id: string | null;
+  neutered: boolean;
+  lim: string | number | null;
+  ribcage: string | number | null;
+  weight_is_default: boolean | null;
+  height_is_default: boolean | null;
+  instagram_username: string | null;
+  profile_picture_id: string;
+  cover_picture_id: string;
+  characteristic_ids: string[];
+  gallery_picture_ids: string[];
+  _id: string;
+  _type: string;
+  _version: string;
+  read_only: boolean;
+}
+
+export interface IDeviceHWReportResponse {
+  time: number;
+  battery_level: number;
+  clip_mounted_state: string | null;
+  _id: string;
+  _type: string;
+  _version: string;
+  report_id: string;
+  power_saving_zone_id: string;
+  hw_status: string | null;
+}
+
+export interface IDevicePosReportResponse {
+  time: number;
+  time_rcvd: number;
+  pos_status: string | null;
+  latlong: number[];
+  speed: string | number | null;
+  pos_uncertainty: number;
+  _id: string;
+  _type: string;
+  _version: string;
+  altitude: number;
+  report_id: string;
+  sensor_used: string;
+  nearby_user_id: string | null;
+  power_saving_zone_id: string;
+}
+
+export interface IAddressMetaResponse {
+  street: string;
+  house_number: string;
+  zip_code: string;
+  city: string;
+  country: string;
+  full_address: string;
+}
+
+export interface IWeightActivityHistoryResponse {
+  _id: string;
+  _type: string;
+  _version: string;
+  value: number;
+  interval_start: number;
+  inverval_end: number;
+  data: Array<number[]>;
+}
+
+export type IPositionHistoryResponse = IPositionHistoryItem[];
+interface IPositionHistoryItem {
+  time: number;
+  latlong: number[];
+  alt: number;
+  speed: number | null;
+  course: number | null;
+  pos_uncertainty: number;
+  sensor_used: SensorUsed;
+}
+
+export enum SensorUsed {
+  GPS = "GPS",
+  KNOWN_WIFI = "KNOWN_WIFI",
+}
+
+export type IGeofenceResponse = IGeofenceItem[];
+export interface IGeofenceItem {
+  _id: string;
+  _type: string;
+  _version: string;
+}
+
+export interface IRequestExportResponse {
+  eid: string;
+}
+
+export interface IExportStatusResponse {
+  status: boolean;
 }
