@@ -23,13 +23,13 @@ export default function LoginPage() {
 
   const handleLogin = useCallback(async () => {
     if (emailValue && passwordValue) {
-      const userToken = await getAuthToken(emailValue, passwordValue);
-      if (!userToken) {
+      const { token, userId } = await getAuthToken(emailValue, passwordValue);
+      if (!token || !userId) {
         enqueueSnackbar("Invalid email or password", { variant: "error" });
         return;
       }
 
-      auth.signIn(userToken);
+      auth.signIn(token, userId);
     }
   }, [auth, emailValue, passwordValue]);
 

@@ -17,6 +17,8 @@ const skippedPassThroughHeaders = [
   "user-agent",
 ];
 
+const disallowedBodyMethods = ["GET", "HEAD"];
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -24,6 +26,7 @@ export default async function handler(
   const { url } = req.query;
   const headers = req.headers;
   const body = req.body;
+  const shouldSendBody = !disallowedBodyMethods.includes(req.method as string);
 
   if (typeof url !== "string") {
     return res.status(400).json({ error: "Invalid URL" });
@@ -41,7 +44,7 @@ export default async function handler(
       headers: {
         ...(passThroughHeaders as Record<string, string>),
       },
-      body: body ? JSON.stringify(body) : undefined,
+      ...(shouldSendBody && body ? { body: JSON.stringify(body) } : {}),
     });
 
     return res.status(response.status).send(await response.text());

@@ -6,10 +6,11 @@ interface IProps {
   skipAuthCheck?: boolean;
 }
 
+const cookieMaxAge = 60 * 60 * 24 * 6; //normally 7 days, but 6 to be safe
+
 export function useAuth({ skipAuthCheck }: IProps = { skipAuthCheck: false }) {
-  const [{ tractive_token }, setCookie, removeCookie] = useCookies<string>([
-    "tractive_token",
-  ]);
+  const [{ tractive_token, tractive_user_id }, setCookie, removeCookie] =
+    useCookies<string>(["tractive_token"]);
   const router = useRouter();
 
   const isAuthenticated = !!tractive_token;
@@ -19,9 +20,12 @@ export function useAuth({ skipAuthCheck }: IProps = { skipAuthCheck: false }) {
   }
 
   const handleSignIn = useCallback(
-    (token: string) => {
+    (token: string, userId: string) => {
       setCookie("tractive_token", token, {
-        maxAge: 60 * 60 * 24 * 6, //normally 7 days, but 6 to be safe
+        maxAge: cookieMaxAge,
+      });
+      setCookie("tractive_user_id", userId, {
+        maxAge: cookieMaxAge,
       });
 
       const redirectPath = router.query.r as string;
@@ -39,6 +43,7 @@ export function useAuth({ skipAuthCheck }: IProps = { skipAuthCheck: false }) {
   return {
     isAuthenticated,
     token: tractive_token,
+    userId: tractive_user_id,
     signIn: handleSignIn,
     signOut: handleSignOut,
   };

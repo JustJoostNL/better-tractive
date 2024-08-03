@@ -45,7 +45,7 @@ import {
 export async function getAuthToken(
   email: string,
   password: string,
-): Promise<string | null> {
+): Promise<{ token: string | undefined; userId: string | undefined }> {
   const response = await fetch(
     tractiveBaseUrl + authTokenPath,
     composeFetchOptions("POST", "", {
@@ -60,13 +60,16 @@ export async function getAuthToken(
   }
 
   const json: IAuthTokenResponse = await response.json();
-  return json.access_token || null;
+  return { token: json.access_token, userId: json.user_id };
 }
 
-export async function getUser(
-  userId: string,
-  authToken: string,
-): Promise<IUserResponse> {
+export async function getUser({
+  userId,
+  authToken,
+}: {
+  userId: string;
+  authToken: string;
+}): Promise<IUserResponse> {
   const response = await fetch(
     tractiveBaseUrl + userPath(userId),
     composeFetchOptions("GET", authToken),
@@ -80,10 +83,13 @@ export async function getUser(
   return json;
 }
 
-export async function getTrackers(
-  userId: string,
-  authToken: string,
-): Promise<IObjectListResponse> {
+export async function getTrackers({
+  userId,
+  authToken,
+}: {
+  userId: string;
+  authToken: string;
+}): Promise<IObjectListResponse> {
   const response = await fetch(
     tractiveBaseUrl + trackersPath(userId),
     composeFetchOptions("GET", authToken),
@@ -97,10 +103,13 @@ export async function getTrackers(
   return json;
 }
 
-export async function getTracker(
-  trackerId: string,
-  authToken: string,
-): Promise<ITrackerResponse> {
+export async function getTracker({
+  trackerId,
+  authToken,
+}: {
+  trackerId: string;
+  authToken: string;
+}): Promise<ITrackerResponse> {
   const response = await fetch(
     tractiveBaseUrl + trackerPath(trackerId),
     composeFetchOptions("GET", authToken),
@@ -114,10 +123,13 @@ export async function getTracker(
   return json;
 }
 
-export async function getTrackableObjects(
-  userId: string,
-  authToken: string,
-): Promise<IObjectListResponse> {
+export async function getTrackableObjects({
+  userId,
+  authToken,
+}: {
+  userId: string;
+  authToken: string;
+}): Promise<IObjectListResponse> {
   const response = await fetch(
     tractiveBaseUrl + trackableObjectsPath(userId),
     composeFetchOptions("GET", authToken),
@@ -131,10 +143,13 @@ export async function getTrackableObjects(
   return json;
 }
 
-export async function getTrackableObject(
-  trackableObjectId: string,
-  authToken: string,
-): Promise<ITrackableObjectResponse> {
+export async function getTrackableObject({
+  trackableObjectId,
+  authToken,
+}: {
+  trackableObjectId: string;
+  authToken: string;
+}): Promise<ITrackableObjectResponse> {
   const response = await fetch(
     tractiveBaseUrl + trackableObjectPath(trackableObjectId),
     composeFetchOptions("GET", authToken),
@@ -148,10 +163,13 @@ export async function getTrackableObject(
   return json;
 }
 
-export async function getDeviceHardwareReport(
-  trackerId: string,
-  authToken: string,
-): Promise<IDeviceHWReportResponse> {
+export async function getDeviceHardwareReport({
+  trackerId,
+  authToken,
+}: {
+  trackerId: string;
+  authToken: string;
+}): Promise<IDeviceHWReportResponse> {
   const response = await fetch(
     tractiveBaseUrl + deviceHardwareReportPath(trackerId),
     composeFetchOptions("GET", authToken),
@@ -168,10 +186,13 @@ export async function getDeviceHardwareReport(
   return json;
 }
 
-export async function getDevicePosReport(
-  trackerId: string,
-  authToken: string,
-): Promise<IDevicePosReportResponse> {
+export async function getDevicePosReport({
+  trackerId,
+  authToken,
+}: {
+  trackerId: string;
+  authToken: string;
+}): Promise<IDevicePosReportResponse> {
   const response = await fetch(
     tractiveBaseUrl + devicePosReportPath(trackerId),
     composeFetchOptions("GET", authToken),
@@ -185,11 +206,15 @@ export async function getDevicePosReport(
   return json;
 }
 
-export async function getAddressMetaByLocation(
-  latitude: number,
-  longitude: number,
-  authToken: string,
-): Promise<IAddressMetaResponse> {
+export async function getAddressMetaByLocation({
+  latitude,
+  longitude,
+  authToken,
+}: {
+  latitude: number;
+  longitude: number;
+  authToken: string;
+}): Promise<IAddressMetaResponse> {
   const response = await fetch(
     tractiveBaseUrl + addressMetaByLocationPath(latitude, longitude),
     composeFetchOptions("GET", authToken),
@@ -206,12 +231,17 @@ export async function getAddressMetaByLocation(
   return json;
 }
 
-export async function getMediaResource(
-  mediaId: string,
-  width: string | number,
-  height: string | number,
-  authToken: string,
-): Promise<Blob> {
+export async function getMediaResource({
+  mediaId,
+  width,
+  height,
+  authToken,
+}: {
+  mediaId: string;
+  width: string | number;
+  height: string | number;
+  authToken: string;
+}): Promise<Blob> {
   const response = await fetch(
     tractiveBaseUrl + mediaResourcePath(mediaId, { width, height }),
     composeFetchOptions("GET", authToken),
@@ -225,10 +255,13 @@ export async function getMediaResource(
   return blob;
 }
 
-export async function getWeightActivityHistory(
-  trackableObjectId: string,
-  authToken: string,
-): Promise<IWeightActivityHistoryResponse> {
+export async function getWeightActivityHistory({
+  trackableObjectId,
+  authToken,
+}: {
+  trackableObjectId: string;
+  authToken: string;
+}): Promise<IWeightActivityHistoryResponse> {
   const response = await fetch(
     tractiveBaseUrl + weightActivityHistoryPath(trackableObjectId),
     composeFetchOptions("GET", authToken),
@@ -245,12 +278,17 @@ export async function getWeightActivityHistory(
   return json;
 }
 
-export async function getPositionHistory(
-  timeFrom: number,
-  timeTo: number,
-  trackerId: string,
-  authToken: string,
-): Promise<IPositionHistoryResponse> {
+export async function getPositionHistory({
+  timeFrom,
+  timeTo,
+  trackerId,
+  authToken,
+}: {
+  timeFrom: number;
+  timeTo: number;
+  trackerId: string;
+  authToken: string;
+}): Promise<IPositionHistoryResponse> {
   const response = await fetch(
     tractiveBaseUrl +
       positionHistoryPath(timeFrom, timeTo, trackerId, "json_segments"),
@@ -265,12 +303,17 @@ export async function getPositionHistory(
   return json;
 }
 
-export async function mutateTrackerState(
-  trackerId: string,
-  commandId: TrackerCommand,
-  command: "on" | "off" | boolean,
-  authToken: string,
-): Promise<unknown> {
+export async function mutateTrackerState({
+  trackerId,
+  commandId,
+  command,
+  authToken,
+}: {
+  trackerId: string;
+  commandId: TrackerCommand;
+  command: "on" | "off" | boolean;
+  authToken: string;
+}): Promise<unknown> {
   const response = await fetch(
     tractiveBaseUrl + trackerCommandPath(trackerId, commandId, command),
     composeFetchOptions("POST", authToken),
@@ -284,10 +327,13 @@ export async function mutateTrackerState(
   return json;
 }
 
-export async function getGeofences(
-  trackerId: string,
-  authToken: string,
-): Promise<IGeofenceResponse> {
+export async function getGeofences({
+  trackerId,
+  authToken,
+}: {
+  trackerId: string;
+  authToken: string;
+}): Promise<IGeofenceResponse> {
   const response = await fetch(
     tractiveBaseUrl + geofencesPath(trackerId),
     composeFetchOptions("GET", authToken),
@@ -301,10 +347,13 @@ export async function getGeofences(
   return json;
 }
 
-export async function getGeofence(
-  fenceId: string,
-  authToken: string,
-): Promise<unknown[]> {
+export async function getGeofence({
+  fenceId,
+  authToken,
+}: {
+  fenceId: string;
+  authToken: string;
+}): Promise<unknown[]> {
   const response = await fetch(
     tractiveBaseUrl + geofencePath(fenceId),
     composeFetchOptions("GET", authToken),
@@ -318,13 +367,19 @@ export async function getGeofence(
   return json;
 }
 
-export async function requestExport(
-  trackerId: string,
-  timeFrom: number,
-  timeTo: number,
-  format: ExportFormat,
-  authToken: string,
-): Promise<IRequestExportResponse> {
+export async function requestExport({
+  trackerId,
+  timeFrom,
+  timeTo,
+  format,
+  authToken,
+}: {
+  trackerId: string;
+  timeFrom: number;
+  timeTo: number;
+  format: ExportFormat;
+  authToken: string;
+}): Promise<IRequestExportResponse> {
   const response = await fetch(
     tractiveBaseUrl + requestExportPath(trackerId, timeFrom, timeTo, format),
     composeFetchOptions("GET", authToken),
@@ -338,11 +393,15 @@ export async function requestExport(
   return json;
 }
 
-export async function getExportStatus(
-  trackerId: string,
-  exportId: string,
-  authToken: string,
-): Promise<IExportStatusResponse> {
+export async function getExportStatus({
+  trackerId,
+  exportId,
+  authToken,
+}: {
+  trackerId: string;
+  exportId: string;
+  authToken: string;
+}): Promise<IExportStatusResponse> {
   const response = await fetch(
     tractiveBaseUrl + exportStatusPath(trackerId, exportId),
     composeFetchOptions("GET", authToken),
@@ -356,12 +415,17 @@ export async function getExportStatus(
   return json;
 }
 
-export async function downloadExport(
-  trackerId: string,
-  exportId: string,
-  exportFormat: ExportFormat,
-  authToken: string,
-): Promise<Blob> {
+export async function downloadExport({
+  trackerId,
+  exportId,
+  exportFormat,
+  authToken,
+}: {
+  trackerId: string;
+  exportId: string;
+  exportFormat: ExportFormat;
+  authToken: string;
+}): Promise<Blob> {
   const response = await fetch(
     tractiveBaseUrl + exportDownloadPath(trackerId, exportId, exportFormat),
     composeFetchOptions("GET", authToken),

@@ -37,7 +37,7 @@ export function composeFetchOptions(
       "Content-Type": "application/json",
       "X-Tractive-Client": tractiveClientId,
     },
-    body: body ? JSON.stringify(body) : undefined,
+    ...(body ? { body: JSON.stringify(body) } : {}),
     ...more,
   };
 }
