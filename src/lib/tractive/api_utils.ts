@@ -1,4 +1,4 @@
-export const tractiveBaseUrl = "https://graph.tractive.com";
+export const tractiveBaseUrl = "api/corsproxy?url=https://graph.tractive.com";
 export const tractiveClientId = "5728aa1fc9077f7c32000186";
 
 export enum TrackerCommand {
@@ -28,14 +28,15 @@ export function composeFetchOptions(
   body?: any,
   more?: any,
 ) {
-  const headers = new Headers();
-  headers.append("Content-Type", "application/json");
-  headers.append("X-Tractive-ID", tractiveClientId);
-  headers.append("Authorization", `Bearer ${authToken}`);
-
   return {
     method,
-    headers,
+    headers: {
+      Origin: "https://my.tractive.com",
+      Referer: "https://my.tractive.com/",
+      Authorization: `Bearer ${authToken}`,
+      "Content-Type": "application/json",
+      "X-Tractive-Client": tractiveClientId,
+    },
     body: body ? JSON.stringify(body) : undefined,
     ...more,
   };

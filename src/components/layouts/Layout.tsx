@@ -1,6 +1,7 @@
 import Head from "next/head";
 import React from "react";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, Grow, ThemeProvider } from "@mui/material";
+import { SnackbarProvider } from "notistack";
 import { theme } from "@/lib/theme/theme";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -14,8 +15,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         />
       </Head>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
+        <SnackbarProvider
+          maxSnack={2}
+          autoHideDuration={3000}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          TransitionComponent={Grow}
+        >
+          <CssBaseline />
+          {children}
+        </SnackbarProvider>
       </ThemeProvider>
     </>
   );
