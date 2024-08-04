@@ -1,17 +1,15 @@
 import React from "react";
 import useSWR from "swr";
 import { Typography } from "@mui/material";
-import { JSONTree } from "react-json-tree";
 import { ContentLayout } from "@/components/layouts/ContentLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { getUser } from "@/lib/tractive/api";
 import { Loader } from "@/components/shared/Loader";
 import { PetList } from "@/components/tractive/PetList";
-import { useDebug } from "@/hooks/useDebug";
+import { useSetDebugData } from "@/hooks/useDebug";
 
 export default function Index() {
   const auth = useAuth();
-  const debug = useDebug();
 
   const { data, isLoading } = useSWR(
     {
@@ -25,6 +23,8 @@ export default function Index() {
       refreshInterval: 1000 * 60 * 1, // 1 minute
     },
   );
+
+  useSetDebugData({ key: "userData", value: data, condition: !!data });
 
   if (isLoading) {
     return (
@@ -52,8 +52,6 @@ export default function Index() {
       </Typography>
 
       <PetList />
-
-      {debug && <JSONTree data={data} />}
     </ContentLayout>
   );
 }

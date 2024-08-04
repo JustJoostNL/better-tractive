@@ -6,7 +6,9 @@ import {
   Typography,
   TypographyOwnProps,
 } from "@mui/material";
+import { JSONTree } from "react-json-tree";
 import { Navbar } from "./Navbar";
+import { useDebug } from "@/hooks/useDebug";
 
 interface IProps {
   title: string;
@@ -28,6 +30,8 @@ export const ContentLayout: React.FC<IProps> = ({
   containerProps,
   ...props
 }) => {
+  const { debugState, debugData } = useDebug();
+
   const ContainerWrapper = container ? Container : React.Fragment;
 
   return (
@@ -49,6 +53,8 @@ export const ContentLayout: React.FC<IProps> = ({
           )}
           {children}
         </ContainerWrapper>
+
+        {debugState && <JSONTree data={debugData} />}
       </Box>
     </Box>
   );

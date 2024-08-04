@@ -8,7 +8,6 @@ import {
   Typography,
 } from "@mui/material";
 import { FC } from "react";
-import { JSONTree } from "react-json-tree";
 import useSWR from "swr";
 import { Label, LabelColor } from "../shared/Label";
 import { BatteryIcon } from "./BatteryIcon";
@@ -17,7 +16,7 @@ import {
   getTrackableObject,
   getTracker,
 } from "@/lib/tractive/api";
-import { useDebug } from "@/hooks/useDebug";
+import { useSetDebugData } from "@/hooks/useDebug";
 import { useAuth } from "@/hooks/useAuth";
 import { mediaResourcePath } from "@/lib/tractive/api_paths";
 import { tractiveBaseUrl } from "@/lib/tractive/api_utils";
@@ -28,7 +27,6 @@ interface IProps {
 
 export const PetListCard: FC<IProps> = ({ petId }) => {
   const auth = useAuth();
-  const debug = useDebug();
 
   const { data: trackableObjectData } = useSWR(
     {
@@ -68,6 +66,16 @@ export const PetListCard: FC<IProps> = ({ petId }) => {
       refreshInterval: 1000 * 30, // 30 seconds
     },
   );
+
+  useSetDebugData([
+    {
+      key: "trackableObjectData",
+      value: trackableObjectData,
+      condition: !!trackableObjectData,
+    },
+    { key: "trackerData", value: trackerData, condition: !!trackerData },
+    { key: "hwReportData", value: hwReportData, condition: !!hwReportData },
+  ]);
 
   if (!trackableObjectData || !trackerData || !hwReportData) return null;
 
@@ -132,16 +140,6 @@ export const PetListCard: FC<IProps> = ({ petId }) => {
           </CardContent>
         </CardActionArea>
       </Card>
-
-      {debug && (
-        <JSONTree
-          data={{
-            trackableObjectData,
-            trackerData,
-            hwReportData,
-          }}
-        />
-      )}
     </Box>
   );
 };

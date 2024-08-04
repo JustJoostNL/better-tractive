@@ -7,6 +7,7 @@ import {
   Battery60Rounded,
   Battery80Rounded,
   Battery90Rounded,
+  BatteryFullRounded,
   BatteryCharging20Rounded,
   BatteryCharging30Rounded,
   BatteryCharging50Rounded,
@@ -14,7 +15,6 @@ import {
   BatteryCharging80Rounded,
   BatteryCharging90Rounded,
   BatteryChargingFullRounded,
-  BatteryFullRounded,
 } from "@mui/icons-material";
 import { SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
@@ -25,13 +25,11 @@ interface IProps {
   charging: boolean;
 }
 
+type IconType = OverridableComponent<SvgIconTypeMap<object, "svg">>;
 type BatteryLevel = 0 | 10 | 20 | 30 | 50 | 60 | 80 | 90 | 100;
 const levels: BatteryLevel[] = [0, 10, 20, 30, 50, 60, 80, 90, 100];
 
-const levelIconMap: Record<
-  BatteryLevel,
-  OverridableComponent<SvgIconTypeMap<object, "svg">>
-> = {
+const levelIconMap: Record<BatteryLevel, IconType> = {
   0: Battery0BarRounded,
   10: Battery1BarRounded,
   20: Battery20Rounded,
@@ -43,10 +41,7 @@ const levelIconMap: Record<
   100: BatteryFullRounded,
 };
 
-const levelChargingIconMap: Record<
-  BatteryLevel,
-  OverridableComponent<SvgIconTypeMap<object, "svg">> | undefined
-> = {
+const levelChargingIconMap: Record<BatteryLevel, IconType | undefined> = {
   0: undefined,
   10: undefined,
   20: BatteryCharging20Rounded,
@@ -65,10 +60,7 @@ export const BatteryIcon: FC<IProps> = ({ level, charging }) => {
     () =>
       Object.fromEntries(
         Object.entries(mapToSearch).filter(([, value]) => value !== undefined),
-      ) as Record<
-        BatteryLevel,
-        OverridableComponent<SvgIconTypeMap<object, "svg">>
-      >,
+      ) as Record<BatteryLevel, IconType>,
     [mapToSearch],
   );
 
