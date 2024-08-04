@@ -64,6 +64,12 @@ export function trackerCommandPath(
   return `/4/tracker/${trackerId}/command/${commandId}/${commandStr}`;
 }
 
+export function bulkRequestPath(partial: boolean = true) {
+  const partialNum = partial ? 1 : 0;
+
+  return `/4/bulk?partial=${partialNum}`;
+}
+
 export function geofencesPath(trackerId: string) {
   return `/4/tracker/${trackerId}/geofences`;
 }

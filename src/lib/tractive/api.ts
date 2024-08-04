@@ -2,6 +2,7 @@ import fetch from "cross-fetch";
 import {
   IAddressMetaResponse,
   IAuthTokenResponse,
+  IBulkResponse,
   IDeviceHWReportResponse,
   IDevicePosReportResponse,
   IExportStatusResponse,
@@ -40,6 +41,7 @@ import {
   requestExportPath,
   exportStatusPath,
   exportDownloadPath,
+  bulkRequestPath,
 } from "./api_paths";
 
 export async function getAuthToken(
@@ -316,11 +318,40 @@ export async function mutateTrackerState({
 }): Promise<unknown> {
   const response = await fetch(
     tractiveProxyUrl + trackerCommandPath(trackerId, commandId, command),
-    composeFetchOptions("POST", authToken),
+    composeFetchOptions("GET", authToken),
   );
 
   if (!response.ok) {
     throw new TractiveApiError("Failed to mutate tracker state", response);
+  }
+
+  const json = await response.json();
+  return json;
+}
+
+export async function getBulkData({
+  partial,
+  wantedItems,
+  authToken,
+}: {
+  partial?: boolean;
+  wantedItems: { id: string; type: string }[];
+  authToken: string;
+}): Promise<IBulkResponse> {
+  const transformedItems = wantedItems.map((item) => {
+    return {
+      _id: item.id,
+      _type: item.type,
+    };
+  });
+
+  const response = await fetch(
+    tractiveProxyUrl + bulkRequestPath(partial),
+    composeFetchOptions("POST", authToken, transformedItems),
+  );
+
+  if (!response.ok) {
+    throw new TractiveApiError("Failed to get bulk data", response);
   }
 
   const json = await response.json();

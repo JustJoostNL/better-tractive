@@ -267,3 +267,36 @@ export interface IRequestExportResponse {
 export interface IExportStatusResponse {
   status: boolean;
 }
+
+export type IBulkResponse = BulkItem[];
+export interface BulkItem {
+  _id: string;
+  created_at?: number;
+  updated_at?: number;
+  _version: string;
+  index?: number;
+  shape?: string;
+  coords?: Array<number[]>;
+  radius?: number;
+  trigger?: Trigger[];
+  active: boolean;
+  home_flag?: boolean;
+  deleted_at?: number | null;
+  name?: string;
+  icon?: string;
+  source_geofence_id?: string | null;
+  fence_type?: string;
+  entered_at?: number | null;
+  device?: ObjectItem;
+  _type: string;
+  started_at?: number | null;
+  timeout?: number;
+  remaining?: number;
+  pending?: boolean;
+  reconnecting?: boolean;
+}
+
+export enum Trigger {
+  InToOut = "IN_TO_OUT",
+  OutToIn = "OUT_TO_IN",
+}
