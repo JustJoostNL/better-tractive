@@ -19,7 +19,7 @@ import {
   ExportFormat,
   TrackerCommand,
   TractiveApiError,
-  tractiveBaseUrl,
+  tractiveProxyUrl,
 } from "./api_utils";
 import {
   authTokenPath,
@@ -47,7 +47,7 @@ export async function getAuthToken(
   password: string,
 ): Promise<{ token: string | undefined; userId: string | undefined }> {
   const response = await fetch(
-    tractiveBaseUrl + authTokenPath,
+    tractiveProxyUrl + authTokenPath,
     composeFetchOptions("POST", "", {
       grant_type: "tractive",
       platform_email: email,
@@ -71,7 +71,7 @@ export async function getUser({
   authToken: string;
 }): Promise<IUserResponse> {
   const response = await fetch(
-    tractiveBaseUrl + userPath(userId),
+    tractiveProxyUrl + userPath(userId),
     composeFetchOptions("GET", authToken),
   );
 
@@ -91,7 +91,7 @@ export async function getTrackers({
   authToken: string;
 }): Promise<IObjectListResponse> {
   const response = await fetch(
-    tractiveBaseUrl + trackersPath(userId),
+    tractiveProxyUrl + trackersPath(userId),
     composeFetchOptions("GET", authToken),
   );
 
@@ -111,7 +111,7 @@ export async function getTracker({
   authToken: string;
 }): Promise<ITrackerResponse> {
   const response = await fetch(
-    tractiveBaseUrl + trackerPath(trackerId),
+    tractiveProxyUrl + trackerPath(trackerId),
     composeFetchOptions("GET", authToken),
   );
 
@@ -131,7 +131,7 @@ export async function getTrackableObjects({
   authToken: string;
 }): Promise<IObjectListResponse> {
   const response = await fetch(
-    tractiveBaseUrl + trackableObjectsPath(userId),
+    tractiveProxyUrl + trackableObjectsPath(userId),
     composeFetchOptions("GET", authToken),
   );
 
@@ -151,7 +151,7 @@ export async function getTrackableObject({
   authToken: string;
 }): Promise<ITrackableObjectResponse> {
   const response = await fetch(
-    tractiveBaseUrl + trackableObjectPath(trackableObjectId),
+    tractiveProxyUrl + trackableObjectPath(trackableObjectId),
     composeFetchOptions("GET", authToken),
   );
 
@@ -171,7 +171,7 @@ export async function getDeviceHardwareReport({
   authToken: string;
 }): Promise<IDeviceHWReportResponse> {
   const response = await fetch(
-    tractiveBaseUrl + deviceHardwareReportPath(trackerId),
+    tractiveProxyUrl + deviceHardwareReportPath(trackerId),
     composeFetchOptions("GET", authToken),
   );
 
@@ -194,7 +194,7 @@ export async function getDevicePosReport({
   authToken: string;
 }): Promise<IDevicePosReportResponse> {
   const response = await fetch(
-    tractiveBaseUrl + devicePosReportPath(trackerId),
+    tractiveProxyUrl + devicePosReportPath(trackerId),
     composeFetchOptions("GET", authToken),
   );
 
@@ -216,7 +216,7 @@ export async function getAddressMetaByLocation({
   authToken: string;
 }): Promise<IAddressMetaResponse> {
   const response = await fetch(
-    tractiveBaseUrl + addressMetaByLocationPath(latitude, longitude),
+    tractiveProxyUrl + addressMetaByLocationPath(latitude, longitude),
     composeFetchOptions("GET", authToken),
   );
 
@@ -243,7 +243,7 @@ export async function getMediaResource({
   authToken: string;
 }): Promise<Blob> {
   const response = await fetch(
-    tractiveBaseUrl + mediaResourcePath(mediaId, { width, height }),
+    tractiveProxyUrl + mediaResourcePath(mediaId, { width, height }),
     composeFetchOptions("GET", authToken),
   );
 
@@ -263,7 +263,7 @@ export async function getWeightActivityHistory({
   authToken: string;
 }): Promise<IWeightActivityHistoryResponse> {
   const response = await fetch(
-    tractiveBaseUrl + weightActivityHistoryPath(trackableObjectId),
+    tractiveProxyUrl + weightActivityHistoryPath(trackableObjectId),
     composeFetchOptions("GET", authToken),
   );
 
@@ -290,7 +290,7 @@ export async function getPositionHistory({
   authToken: string;
 }): Promise<IPositionHistoryResponse> {
   const response = await fetch(
-    tractiveBaseUrl +
+    tractiveProxyUrl +
       positionHistoryPath(timeFrom, timeTo, trackerId, "json_segments"),
     composeFetchOptions("GET", authToken),
   );
@@ -315,7 +315,7 @@ export async function mutateTrackerState({
   authToken: string;
 }): Promise<unknown> {
   const response = await fetch(
-    tractiveBaseUrl + trackerCommandPath(trackerId, commandId, command),
+    tractiveProxyUrl + trackerCommandPath(trackerId, commandId, command),
     composeFetchOptions("POST", authToken),
   );
 
@@ -335,7 +335,7 @@ export async function getGeofences({
   authToken: string;
 }): Promise<IGeofenceResponse> {
   const response = await fetch(
-    tractiveBaseUrl + geofencesPath(trackerId),
+    tractiveProxyUrl + geofencesPath(trackerId),
     composeFetchOptions("GET", authToken),
   );
 
@@ -355,7 +355,7 @@ export async function getGeofence({
   authToken: string;
 }): Promise<unknown[]> {
   const response = await fetch(
-    tractiveBaseUrl + geofencePath(fenceId),
+    tractiveProxyUrl + geofencePath(fenceId),
     composeFetchOptions("GET", authToken),
   );
 
@@ -381,7 +381,7 @@ export async function requestExport({
   authToken: string;
 }): Promise<IRequestExportResponse> {
   const response = await fetch(
-    tractiveBaseUrl + requestExportPath(trackerId, timeFrom, timeTo, format),
+    tractiveProxyUrl + requestExportPath(trackerId, timeFrom, timeTo, format),
     composeFetchOptions("GET", authToken),
   );
 
@@ -403,7 +403,7 @@ export async function getExportStatus({
   authToken: string;
 }): Promise<IExportStatusResponse> {
   const response = await fetch(
-    tractiveBaseUrl + exportStatusPath(trackerId, exportId),
+    tractiveProxyUrl + exportStatusPath(trackerId, exportId),
     composeFetchOptions("GET", authToken),
   );
 
@@ -427,7 +427,7 @@ export async function downloadExport({
   authToken: string;
 }): Promise<Blob> {
   const response = await fetch(
-    tractiveBaseUrl + exportDownloadPath(trackerId, exportId, exportFormat),
+    tractiveProxyUrl + exportDownloadPath(trackerId, exportId, exportFormat),
     composeFetchOptions("GET", authToken),
   );
 

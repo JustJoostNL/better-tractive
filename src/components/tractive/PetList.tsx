@@ -1,6 +1,6 @@
 import { FC } from "react";
 import useSWR from "swr";
-import { styled } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import { PetListCard } from "./PetListCard";
 import { useAuth } from "@/hooks/useAuth";
 import { getTrackableObjects } from "@/lib/tractive/api";
@@ -27,6 +27,16 @@ export const PetList: FC = () => {
       refreshInterval: 1000 * 60 * 1, // 1 minute
     },
   );
+
+  if (data?.length === 0) {
+    return (
+      <Root>
+        <Typography variant="h6" color="text.secondary">
+          No pets found.
+        </Typography>
+      </Root>
+    );
+  }
 
   return (
     <Root>

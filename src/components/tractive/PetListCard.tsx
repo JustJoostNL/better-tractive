@@ -10,8 +10,8 @@ import {
 import { FC } from "react";
 import { JSONTree } from "react-json-tree";
 import useSWR from "swr";
-import { BatteryFullRounded } from "@mui/icons-material";
 import { Label, LabelColor } from "../shared/Label";
+import { BatteryIcon } from "./BatteryIcon";
 import {
   getDeviceHardwareReport,
   getTrackableObject,
@@ -20,6 +20,7 @@ import {
 import { useDebug } from "@/hooks/useDebug";
 import { useAuth } from "@/hooks/useAuth";
 import { mediaResourcePath } from "@/lib/tractive/api_paths";
+import { tractiveBaseUrl } from "@/lib/tractive/api_utils";
 
 interface IProps {
   petId: string;
@@ -48,7 +49,7 @@ export const PetListCard: FC<IProps> = ({ petId }) => {
       trackerId: trackableObjectData?.device_id,
       authToken: auth.token,
     },
-    getTracker,
+    trackableObjectData?.device_id ? getTracker : null,
     {
       revalidateOnFocus: false,
       refreshInterval: 1000 * 30, // 30 seconds
@@ -61,14 +62,14 @@ export const PetListCard: FC<IProps> = ({ petId }) => {
       trackerId: trackableObjectData?.device_id,
       authToken: auth.token,
     },
-    getDeviceHardwareReport,
+    trackableObjectData?.device_id ? getDeviceHardwareReport : null,
     {
       revalidateOnFocus: false,
       refreshInterval: 1000 * 30, // 30 seconds
     },
   );
 
-  if (!trackableObjectData || !trackerData) return null;
+  if (!trackableObjectData || !trackerData || !hwReportData) return null;
 
   return (
     <Box>
@@ -89,9 +90,9 @@ export const PetListCard: FC<IProps> = ({ petId }) => {
             <CardMedia
               component="img"
               image={
-                "https://graph.tractive.com" +
+                tractiveBaseUrl +
                 mediaResourcePath(
-                  trackableObjectData?.details.profile_picture_id,
+                  trackableObjectData?.details.cover_picture_id,
                   {
                     width: 400,
                     height: 225,
@@ -106,7 +107,10 @@ export const PetListCard: FC<IProps> = ({ petId }) => {
               <Typography variant="h5" component="div">
                 {trackableObjectData?.details.name}
               </Typography>
+              <Label>{trackableObjectData?.details.pet_type}</Label>
+            </Stack>
 
+            <Stack direction="row" spacing={1} alignItems="center" mt={1}>
               <Label
                 color={
                   trackerData?.state === "OPERATIONAL"
@@ -118,19 +122,26 @@ export const PetListCard: FC<IProps> = ({ petId }) => {
               </Label>
 
               <Label>
-                <BatteryFullRounded
-                  sx={{ transform: "rotate(90deg)", mr: 1 }}
+                <BatteryIcon
+                  level={hwReportData.battery_level}
+                  charging={trackerData.charging_state === "CHARGING"}
                 />
-                {hwReportData?.battery_level}%
+                {hwReportData.battery_level}%
               </Label>
             </Stack>
-
-            <Label>{trackableObjectData?.details.pet_type}</Label>
           </CardContent>
         </CardActionArea>
       </Card>
 
-      {debug && <JSONTree data={trackableObjectData} />}
+      {debug && (
+        <JSONTree
+          data={{
+            trackableObjectData,
+            trackerData,
+            hwReportData,
+          }}
+        />
+      )}
     </Box>
   );
 };
