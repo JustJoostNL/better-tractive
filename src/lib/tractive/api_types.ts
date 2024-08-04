@@ -7,7 +7,7 @@ export interface IUserResponse {
   membership_type: string;
   referral_bonus_type: string;
   guid: string;
-  details: TrackableObjectDetails;
+  details: UserDetails;
   demographics: Demographics;
   settings: UserSettings;
   invoice_address: InvoiceAddress;
@@ -32,7 +32,7 @@ export interface Demographics {
   _type: string;
 }
 
-export interface TrackableObjectDetails {
+export interface UserDetails {
   _id: string;
   _version: string;
   first_name: string;

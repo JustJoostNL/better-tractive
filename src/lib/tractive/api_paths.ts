@@ -38,7 +38,7 @@ export function mediaResourcePath(
   mediaId: string,
   size: { width: string | number; height: string | number },
 ) {
-  return `/4/media/resources/${mediaId}.${size.width.toString()}_${size.height.toString()}_1.jpg`;
+  return `/4/media/resource/${mediaId}.${size.width.toString()}_${size.height.toString()}_1.jpg`;
 }
 
 export function weightActivityHistoryPath(trackableObjectId: string) {
