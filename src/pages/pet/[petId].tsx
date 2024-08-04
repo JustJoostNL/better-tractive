@@ -16,7 +16,15 @@ export default function PetPage() {
     [],
   );
 
-  if (!petId) return <Typography>Missing petId</Typography>;
+  if (!petId) {
+    return (
+      <ContentLayout title="Your pet">
+        <Typography variant="h3" px={2}>
+          Loading...
+        </Typography>
+      </ContentLayout>
+    );
+  }
 
   return (
     <ContentLayout title="Your pet">

@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { getUser } from "@/lib/tractive/api";
 import { Loader } from "@/components/shared/Loader";
 import { PetList } from "@/components/tractive/PetList";
-import { useSetDebugData } from "@/hooks/useDebug";
+import { useMutateDebugState } from "@/hooks/useMutateDebugState";
 
 export default function Index() {
   const auth = useAuth();
@@ -24,7 +24,7 @@ export default function Index() {
     },
   );
 
-  useSetDebugData({ key: "userData", value: data, condition: !!data });
+  useMutateDebugState("user", data);
 
   if (isLoading) {
     return (

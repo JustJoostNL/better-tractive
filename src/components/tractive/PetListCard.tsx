@@ -17,10 +17,10 @@ import {
   getTrackableObject,
   getTracker,
 } from "@/lib/tractive/api";
-import { useSetDebugData } from "@/hooks/useDebug";
 import { useAuth } from "@/hooks/useAuth";
 import { mediaResourcePath } from "@/lib/tractive/api_paths";
 import { tractiveBaseUrl } from "@/lib/tractive/api_utils";
+import { useMutateDebugState } from "@/hooks/useMutateDebugState";
 
 interface IProps {
   petId: string;
@@ -68,15 +68,9 @@ export const PetListCard: FC<IProps> = ({ petId }) => {
     },
   );
 
-  useSetDebugData([
-    {
-      key: "trackableObjectData",
-      value: trackableObjectData,
-      condition: !!trackableObjectData,
-    },
-    { key: "trackerData", value: trackerData, condition: !!trackerData },
-    { key: "hwReportData", value: hwReportData, condition: !!hwReportData },
-  ]);
+  useMutateDebugState("trackableObject", trackableObjectData);
+  useMutateDebugState("tracker", trackerData);
+  useMutateDebugState("hardwareReport", hwReportData);
 
   if (!trackableObjectData || !trackerData || !hwReportData) return null;
 
