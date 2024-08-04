@@ -1,5 +1,5 @@
 export const tractiveBaseUrl = "https://graph.tractive.com";
-export const tractiveProxyUrl = `api/corsproxy?url=${tractiveBaseUrl}`;
+export const tractiveProxyUrl = `http://localhost:3000/api/corsproxy?url=${tractiveBaseUrl}`;
 export const tractiveClientId = "5728aa1fc9077f7c32000186";
 
 export enum TrackerCommand {

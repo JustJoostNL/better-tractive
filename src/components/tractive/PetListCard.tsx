@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { FC } from "react";
 import useSWR from "swr";
+import Link from "next/link";
 import { Label, LabelColor } from "../shared/Label";
 import { BatteryIcon } from "./BatteryIcon";
 import {
@@ -83,6 +84,8 @@ export const PetListCard: FC<IProps> = ({ petId }) => {
     <Box>
       <Card>
         <CardActionArea
+          LinkComponent={Link}
+          href={`/pet/${petId}`}
           sx={{
             display: "flex",
             flexDirection: "column",
