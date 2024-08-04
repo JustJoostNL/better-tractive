@@ -7,6 +7,7 @@ import {
   IDevicePosReportResponse,
   IExportStatusResponse,
   IGeofenceResponse,
+  IMutateTrackerStateResponse,
   IObjectListResponse,
   IPositionHistoryResponse,
   IRequestExportResponse,
@@ -315,7 +316,7 @@ export async function mutateTrackerState({
   commandId: TrackerCommand;
   command: "on" | "off" | boolean;
   authToken: string;
-}): Promise<unknown> {
+}): Promise<IMutateTrackerStateResponse> {
   const response = await fetch(
     tractiveProxyUrl + trackerCommandPath(trackerId, commandId, command),
     composeFetchOptions("GET", authToken),

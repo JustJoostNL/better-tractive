@@ -300,3 +300,11 @@ export enum Trigger {
   InToOut = "IN_TO_OUT",
   OutToIn = "OUT_TO_IN",
 }
+
+export interface IMutateTrackerStateResponse {
+  active: boolean;
+  started_at: null;
+  timeout: number;
+  remaining: number;
+  pending: boolean;
+}
