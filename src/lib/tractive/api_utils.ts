@@ -39,6 +39,10 @@ export class TractiveApiError extends Error {
   }
 }
 
+export function formatErrorMessage(error: TractiveApiError) {
+  return `${error.message}: ${error.response?.status} (${error.response?.statusText})`;
+}
+
 export function composeFetchOptions(
   method: string,
   authToken: string,

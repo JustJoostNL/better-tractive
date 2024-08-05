@@ -10,14 +10,12 @@ import {
 } from "@/lib/tractive/api_types";
 
 interface IProps {
-  petId: string;
   trackableObjectData: ITrackableObjectResponse;
   bulkData: IBulkResponse;
   mutateBulkData: KeyedMutator<IBulkResponse>;
 }
 
 export const ManageTrackerSection: FC<IProps> = ({
-  petId: _petId,
   trackableObjectData,
   bulkData,
   mutateBulkData,

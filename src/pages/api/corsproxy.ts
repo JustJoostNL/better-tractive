@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-const skippedPassThroughHeaders = [
+const skippedPassthroughHeaders = [
   "host",
   "user-agent",
   "content-length",
@@ -16,14 +16,13 @@ const skippedPassThroughHeaders = [
   "sec-fetch-site",
   "user-agent",
 ];
-
 const disallowedBodyMethods = ["GET", "HEAD"];
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { url } = req.query;
+  const { url, ...queryParams } = req.query;
   const headers = req.headers;
   const body = req.body;
   const shouldSendBody = !disallowedBodyMethods.includes(req.method as string);
@@ -32,22 +31,30 @@ export default async function handler(
     return res.status(400).json({ error: "Invalid URL" });
   }
 
-  const passThroughHeaders = Object.fromEntries(
+  const passthroughHeaders = Object.fromEntries(
     Object.entries(headers).filter(
-      ([key]) => !skippedPassThroughHeaders.includes(key),
+      ([key]) => !skippedPassthroughHeaders.includes(key.toLowerCase()),
     ),
   );
 
   try {
-    const fetchUrl = new URL(url as string);
-    fetchUrl.search = new URLSearchParams(
-      req.query as Record<string, string>,
-    ).toString();
+    const fetchUrl = new URL(url);
+    const existingParams = new URLSearchParams(fetchUrl.search);
+
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (Array.isArray(value)) {
+        value.forEach((val) => existingParams.append(key, val));
+      } else {
+        existingParams.append(key, value as string);
+      }
+    }
+
+    fetchUrl.search = existingParams.toString();
 
     const response = await fetch(fetchUrl.toString(), {
       method: req.method,
       headers: {
-        ...(passThroughHeaders as Record<string, string>),
+        ...(passthroughHeaders as Record<string, string>),
       },
       ...(shouldSendBody && body ? { body: JSON.stringify(body) } : {}),
     });

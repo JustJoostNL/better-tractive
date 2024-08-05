@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { ContentLayout } from "@/components/layouts/ContentLayout";
@@ -14,13 +14,15 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMutateDebugState } from "@/hooks/useMutateDebugState";
 import { Loader } from "@/components/shared/Loader";
 import { ManageTrackerSection } from "@/components/tractive/ManageTrackerSection";
-import { LeaderboardType } from "@/lib/tractive/api_utils";
+import { formatErrorMessage, LeaderboardType } from "@/lib/tractive/api_utils";
 import { PetLeaderboardSection } from "@/components/tractive/PetLeaderboardSection";
 
 export default function PetPage() {
   const auth = useAuth();
   const router = useRouter();
   const { petId } = router.query as { petId: string };
+  const [selectedLeaderboardType, setSelectedLeaderboardType] =
+    useState<LeaderboardType>(LeaderboardType.LOCAL);
 
   const _TractiveMap = useMemo(
     () =>
@@ -43,7 +45,7 @@ export default function PetPage() {
     },
   );
 
-  const { data: trackerData } = useSWR(
+  const { data: trackerData, error: trackerError } = useSWR(
     {
       type: `tracker-${trackableObjectData?.device_id}`,
       trackerId: trackableObjectData?.device_id,
@@ -56,7 +58,11 @@ export default function PetPage() {
     },
   );
 
-  const { data: bulkData, mutate: mutateBulkData } = useSWR(
+  const {
+    data: bulkData,
+    error: bulkError,
+    mutate: mutateBulkData,
+  } = useSWR(
     {
       type: `bulk_data-${trackableObjectData?.device_id}`,
       wantedItems: [
@@ -82,15 +88,15 @@ export default function PetPage() {
     },
   );
 
-  const { data: leaderbordData } = useSWR(
+  const { data: leaderbordData, error: leaderboardError } = useSWR(
     {
       type: `leaderboard-${petId}`,
-      boardType: LeaderboardType.LOCAL,
+      boardType: selectedLeaderboardType,
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
       petId,
-      boardLimit: 50,
-      petLimit: 0,
+      boardLimit: 10,
+      petLimit: 2,
       authToken: auth.token,
     },
     petId ? getLeaderboard : null,
@@ -102,18 +108,18 @@ export default function PetPage() {
 
   const isLoading =
     !trackableObjectData || !trackerData || !bulkData || !leaderbordData;
+  const error =
+    trackableObjectError || trackerError || bulkError || leaderboardError;
 
   useMutateDebugState("trackableObject", trackableObjectData);
   useMutateDebugState("tracker", trackerData);
   useMutateDebugState("bulk", bulkData);
 
-  if (trackableObjectError) {
+  if (error) {
     return (
       <ContentLayout title="Pet" hideTitle>
         <Typography variant="h3" color="error" p={2}>
-          {trackableObjectError.message}:{" "}
-          {trackableObjectError.response?.status} (
-          {trackableObjectError.response?.statusText})
+          {formatErrorMessage(error)}
         </Typography>
       </ContentLayout>
     );
@@ -131,13 +137,16 @@ export default function PetPage() {
     <ContentLayout title={`Dashboard for ${trackableObjectData?.details.name}`}>
       <Stack p={2} direction="row" spacing={2}>
         <ManageTrackerSection
-          petId={petId}
           trackableObjectData={trackableObjectData}
           bulkData={bulkData}
           mutateBulkData={mutateBulkData}
         />
 
-        <PetLeaderboardSection leaderboardData={leaderbordData} />
+        <PetLeaderboardSection
+          leaderboardData={leaderbordData}
+          selectedLeaderboardType={selectedLeaderboardType}
+          setSelectedLeaderboardType={setSelectedLeaderboardType}
+        />
       </Stack>
     </ContentLayout>
   );
