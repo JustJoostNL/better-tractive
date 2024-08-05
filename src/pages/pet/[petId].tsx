@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { ContentLayout } from "@/components/layouts/ContentLayout";
 import {
   getBulkData,
+  getLeaderboard,
   getTrackableObject,
   getTracker,
 } from "@/lib/tractive/api";
@@ -13,11 +14,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMutateDebugState } from "@/hooks/useMutateDebugState";
 import { Loader } from "@/components/shared/Loader";
 import { ManageTrackerSection } from "@/components/tractive/ManageTrackerSection";
+import { LeaderboardType } from "@/lib/tractive/api_utils";
+import { PetLeaderboardSection } from "@/components/tractive/PetLeaderboardSection";
 
 export default function PetPage() {
+  const auth = useAuth();
   const router = useRouter();
   const { petId } = router.query as { petId: string };
-  const auth = useAuth();
 
   const _TractiveMap = useMemo(
     () =>
@@ -27,13 +30,13 @@ export default function PetPage() {
     [],
   );
 
-  const { data: trackableObjectData } = useSWR(
+  const { data: trackableObjectData, error: trackableObjectError } = useSWR(
     {
       type: `trackable_objects-${petId}`,
       trackableObjectId: petId,
       authToken: auth.token,
     },
-    getTrackableObject,
+    petId ? getTrackableObject : null,
     {
       revalidateOnFocus: false,
       refreshInterval: 1000 * 30, // 30 seconds
@@ -79,11 +82,44 @@ export default function PetPage() {
     },
   );
 
+  const { data: leaderbordData } = useSWR(
+    {
+      type: `leaderboard-${petId}`,
+      boardType: LeaderboardType.LOCAL,
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      petId,
+      boardLimit: 50,
+      petLimit: 0,
+      authToken: auth.token,
+    },
+    petId ? getLeaderboard : null,
+    {
+      revalidateOnFocus: false,
+      refreshInterval: 1000 * 30, // 30 seconds
+    },
+  );
+
+  const isLoading =
+    !trackableObjectData || !trackerData || !bulkData || !leaderbordData;
+
   useMutateDebugState("trackableObject", trackableObjectData);
   useMutateDebugState("tracker", trackerData);
   useMutateDebugState("bulk", bulkData);
 
-  if (!trackableObjectData || !trackerData || !bulkData) {
+  if (trackableObjectError) {
+    return (
+      <ContentLayout title="Pet" hideTitle>
+        <Typography variant="h3" color="error" p={2}>
+          {trackableObjectError.message}:{" "}
+          {trackableObjectError.response?.status} (
+          {trackableObjectError.response?.statusText})
+        </Typography>
+      </ContentLayout>
+    );
+  }
+
+  if (isLoading) {
     return (
       <ContentLayout title="Pet" hideTitle>
         <Loader />
@@ -100,6 +136,8 @@ export default function PetPage() {
           bulkData={bulkData}
           mutateBulkData={mutateBulkData}
         />
+
+        <PetLeaderboardSection leaderboardData={leaderbordData} />
       </Stack>
     </ContentLayout>
   );

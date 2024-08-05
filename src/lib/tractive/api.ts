@@ -7,6 +7,7 @@ import {
   IDevicePosReportResponse,
   IExportStatusResponse,
   IGeofenceResponse,
+  ILeaderboardResponse,
   IMutateTrackerStateResponse,
   IObjectListResponse,
   IPositionHistoryResponse,
@@ -19,6 +20,7 @@ import {
 import {
   composeFetchOptions,
   ExportFormat,
+  LeaderboardType,
   TrackerCommand,
   TractiveApiError,
   tractiveProxyUrl,
@@ -43,6 +45,7 @@ import {
   exportStatusPath,
   exportDownloadPath,
   bulkRequestPath,
+  leaderbordPath,
 } from "./api_paths";
 
 export async function getAuthToken(
@@ -353,6 +356,37 @@ export async function getBulkData({
 
   if (!response.ok) {
     throw new TractiveApiError("Failed to get bulk data", response);
+  }
+
+  const json = await response.json();
+  return json;
+}
+
+export async function getLeaderboard({
+  boardType,
+  year,
+  month,
+  petId,
+  boardLimit,
+  petLimit,
+  authToken,
+}: {
+  boardType: LeaderboardType;
+  year: string | number;
+  month: string | number;
+  petId: string;
+  boardLimit: string | number;
+  petLimit: string | number;
+  authToken: string;
+}): Promise<ILeaderboardResponse> {
+  const response = await fetch(
+    tractiveProxyUrl +
+      leaderbordPath(petId, boardType, boardLimit, petLimit, year, month),
+    composeFetchOptions("GET", authToken),
+  );
+
+  if (!response.ok) {
+    throw new TractiveApiError("Failed to get leaderboard", response);
   }
 
   const json = await response.json();

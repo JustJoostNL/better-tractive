@@ -39,7 +39,12 @@ export default async function handler(
   );
 
   try {
-    const response = await fetch(url, {
+    const fetchUrl = new URL(url as string);
+    fetchUrl.search = new URLSearchParams(
+      req.query as Record<string, string>,
+    ).toString();
+
+    const response = await fetch(fetchUrl.toString(), {
       method: req.method,
       headers: {
         ...(passThroughHeaders as Record<string, string>),

@@ -163,9 +163,14 @@ export interface ITrackableObjectResponse {
   created_at: number;
 }
 
+export enum PetType {
+  Cat = "CAT",
+  Dog = "DOG",
+}
+
 export interface TrackableObjectDetails {
   name: string;
-  pet_type: string;
+  pet_type: PetType;
   breed_ids: string[];
   gender: string;
   birthday: number;
@@ -307,4 +312,34 @@ export interface IMutateTrackerStateResponse {
   timeout: number;
   remaining: number;
   pending: boolean;
+}
+
+export interface ILeaderboardResponse {
+  board: LeaderboardItem[];
+  pet_id: string;
+}
+
+export interface LeaderboardItem {
+  rank: number;
+  image_url?: string;
+  score: number;
+  pet_type: PetType;
+  name: string;
+  is_shared: boolean;
+  is_owned: boolean;
+  is_requested: boolean;
+  friendship_code: string;
+  birthday: number;
+  breed_ids: string[];
+  is_friend_pet: boolean;
+  gender?: Gender;
+  weight?: number;
+  owner_name?: string;
+  ribcage?: number;
+  lim?: number;
+}
+
+export enum Gender {
+  F = "F",
+  M = "M",
 }

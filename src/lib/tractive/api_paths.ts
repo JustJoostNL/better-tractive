@@ -1,4 +1,4 @@
-import { TrackerCommand, ExportFormat } from "./api_utils";
+import { TrackerCommand, ExportFormat, LeaderboardType } from "./api_utils";
 
 export const authTokenPath = "/4/auth/token";
 
@@ -76,6 +76,17 @@ export function geofencesPath(trackerId: string) {
 
 export function geofencePath(fenceId: string) {
   return `/4/geofence/${fenceId}`;
+}
+
+export function leaderbordPath(
+  petId: string,
+  boardType: LeaderboardType,
+  boardLimit: string | number,
+  petLimit: string | number,
+  year: string | number,
+  month: string | number,
+) {
+  return `/3/stream/boards/${boardType}?board_limit=${boardLimit}&pet_id=${petId}&pet_limit=${petLimit}&local_year=${year}&local_month=${month}`;
 }
 
 export function requestExportPath(

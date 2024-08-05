@@ -5,10 +5,23 @@ export const tractiveProxyUrl =
     : `/api/corsproxy?url=${tractiveBaseUrl}`;
 export const tractiveClientId = "5728aa1fc9077f7c32000186";
 
+export function proxyUrl(url: string) {
+  return typeof window !== "undefined"
+    ? `${window.location.origin}/api/corsproxy?url=${url}`
+    : `/api/corsproxy?url=${url}`;
+}
+
 export enum TrackerCommand {
   LiveTracking = "live_tracking",
   BuzzerControl = "buzzer_control",
   LedControl = "led_control",
+}
+
+export enum LeaderboardType {
+  LOCAL = "local",
+  WORLDWIDE = "worldwide",
+  BREED = "breed",
+  FRIENDS = "friends",
 }
 
 export enum ExportFormat {
