@@ -117,8 +117,7 @@ export default function PetPage() {
     },
   );
 
-  const isLoading =
-    !trackableObjectData || !trackerData || !bulkData || !leaderbordData;
+  const isLoading = !trackableObjectData || !trackerData || !bulkData;
   const error =
     trackableObjectError || trackerError || bulkError || leaderboardError;
 

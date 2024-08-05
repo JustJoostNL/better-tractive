@@ -26,6 +26,7 @@ export const ManageTrackerSection: FC<IProps> = ({
     <Card
       sx={{
         width: "fit-content",
+        height: "fit-content",
         marginBottom: 2,
       }}
     >

@@ -1,11 +1,20 @@
-import { Card, CardContent, CardHeader, List, Tab, Tabs } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  Container,
+  List,
+  Tab,
+  Tabs,
+} from "@mui/material";
 import { Dispatch, FC, SetStateAction, useCallback } from "react";
 import { PetLeaderboardItem } from "./PetLeaderboardItem";
 import { ILeaderboardResponse } from "@/lib/tractive/api_types";
 import { LeaderboardType } from "@/lib/tractive/api_utils";
 
 interface IProps {
-  leaderboardData: ILeaderboardResponse;
+  leaderboardData: ILeaderboardResponse | undefined;
   selectedLeaderboardType: LeaderboardType;
   setSelectedLeaderboardType: Dispatch<SetStateAction<LeaderboardType>>;
 }
@@ -22,15 +31,11 @@ export const PetLeaderboardSection: FC<IProps> = ({
     [setSelectedLeaderboardType],
   );
 
-  if (!leaderboardData) return null;
-
   return (
     <Card
       sx={{
         marginBottom: 2,
         width: "auto",
-        height: 500,
-        overflow: "scroll",
       }}
     >
       <CardHeader
@@ -53,10 +58,21 @@ export const PetLeaderboardSection: FC<IProps> = ({
       </Tabs>
 
       <CardContent>
-        <List>
-          {leaderboardData.board.map((item) => (
-            <PetLeaderboardItem key={item.friendship_code} item={item} />
-          ))}
+        <List
+          sx={{
+            height: 400,
+            overflow: "scroll",
+          }}
+        >
+          {!leaderboardData ? (
+            <Container sx={{ textAlign: "center" }}>
+              <CircularProgress />
+            </Container>
+          ) : (
+            leaderboardData.board.map((item) => (
+              <PetLeaderboardItem key={item.rank} item={item} />
+            ))
+          )}
         </List>
       </CardContent>
     </Card>
