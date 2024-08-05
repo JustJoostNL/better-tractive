@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { KeyedMutator } from "swr";
 import { FlashlightOffRounded, FlashlightOnRounded } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
@@ -13,7 +13,7 @@ interface IProps {
   mutateBulkData: KeyedMutator<IBulkResponse>;
 }
 
-const MAX_TIMEOUT = 15;
+const MAX_CHECKS = 10;
 
 export const LedStateButton: FC<IProps> = ({
   trackerId,
@@ -28,30 +28,28 @@ export const LedStateButton: FC<IProps> = ({
     [bulkData],
   );
 
-  const checkForExpectedLedState = useCallback(
-    async (expectedState: boolean) => {
-      let timeoutCounter = 0;
-
-      const interval = setInterval(async () => {
-        const newLedState = (await mutateBulkData())?.find((item) =>
-          item._id.includes("led_control"),
-        )?.active;
-
-        if (newLedState === expectedState) {
-          setLoading(false);
-          clearInterval(interval);
-        }
-
-        if (timeoutCounter > MAX_TIMEOUT) {
-          setLoading(false);
-          clearInterval(interval);
-        }
-
-        timeoutCounter++;
-      }, 1000);
-    },
-    [mutateBulkData],
+  const pendingState = useMemo(
+    () => bulkData?.find((item) => item._id.includes("led_control"))?.pending,
+    [bulkData],
   );
+
+  useEffect(() => {
+    setLoading(!!pendingState);
+  }, [pendingState]);
+
+  const checkForExpectedLedState = useCallback(async () => {
+    let checkCounter = 0;
+
+    const interval = setInterval(async () => {
+      await mutateBulkData();
+
+      if (checkCounter > MAX_CHECKS) {
+        clearInterval(interval);
+      }
+
+      checkCounter++;
+    }, 1000);
+  }, [mutateBulkData]);
 
   const handleClick = useCallback(async () => {
     if (typeof trackerId !== "string" || typeof ledState === "undefined") {
@@ -66,7 +64,9 @@ export const LedStateButton: FC<IProps> = ({
       command: ledState ? "off" : "on",
       authToken: auth.token,
     });
-    if (response.pending) await checkForExpectedLedState(!ledState);
+
+    setLoading(!!response.pending);
+    await checkForExpectedLedState();
   }, [auth.token, checkForExpectedLedState, ledState, trackerId]);
 
   if (typeof trackerId !== "string" || typeof ledState === "undefined") {

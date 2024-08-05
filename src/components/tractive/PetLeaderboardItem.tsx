@@ -5,6 +5,7 @@ import {
   ListItemText,
   Typography,
   Box,
+  Tooltip,
 } from "@mui/material";
 import Image from "next/image";
 import { PetsRounded } from "@mui/icons-material";
@@ -15,6 +16,25 @@ import { tractiveBaseUrl } from "@/lib/tractive/api_utils";
 interface IProps {
   item: LeaderboardItem;
 }
+
+const descriptions = [
+  "Wow, that's amazing!",
+  "Great job!",
+  "Keep it up!",
+  "You're doing awesome!",
+  "You're a superstar!",
+  "That's impressive!",
+  "You're a rockstar!",
+  "You're a legend!",
+  "You're a champion!",
+  "You're a hero!",
+  "You're a winner!",
+  "You're a top performer!",
+  "You're a top achiever!",
+  "You're a top player!",
+  "You're a top scorer!",
+  "You're a top pet!",
+];
 
 export const PetLeaderboardItem: FC<IProps> = ({ item }) => {
   const imageId = useMemo(() => {
@@ -80,7 +100,19 @@ export const PetLeaderboardItem: FC<IProps> = ({ item }) => {
       </ListItemAvatar>
       <ListItemText
         primary={capitalizePetName(item.name)}
-        secondary={`${item.score} minutes`}
+        secondary={
+          <Tooltip
+            title={
+              descriptions[Math.floor(Math.random() * descriptions.length)]
+            }
+            arrow
+            placement="bottom"
+          >
+            <Typography variant="body2" component="span">
+              {item.score} minutes
+            </Typography>
+          </Tooltip>
+        }
         sx={{ ml: 1 }}
       />
     </ListItem>

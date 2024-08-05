@@ -86,7 +86,7 @@ export function leaderbordPath(
   year: string | number,
   month: string | number,
 ) {
-  return `/3/stream/boards/${boardType}?board_limit=${boardLimit}&pet_id=${petId}&pet_limit=${petLimit}&local_year=${year}&local_month=${month}`;
+  return `/4/stream/boards/${boardType}?board_limit=${boardLimit}&pet_id=${petId}&pet_limit=${petLimit}&local_year=${year}&local_month=${month}`;
 }
 
 export function requestExportPath(

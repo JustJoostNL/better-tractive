@@ -75,6 +75,14 @@ export const theme = responsiveFontSizes(
           },
         },
       },
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: {
+            fontSize: "12px",
+            fontWeight: "bold",
+          },
+        },
+      },
     },
     palette: {
       mode: "dark",
