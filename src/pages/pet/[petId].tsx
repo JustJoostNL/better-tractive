@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/router";
@@ -16,6 +16,17 @@ import { Loader } from "@/components/shared/Loader";
 import { ManageTrackerSection } from "@/components/tractive/ManageTrackerSection";
 import { formatErrorMessage, LeaderboardType } from "@/lib/tractive/api_utils";
 import { PetLeaderboardSection } from "@/components/tractive/PetLeaderboardSection";
+
+const Root = styled("div")(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: theme.spacing(2),
+  margin: "auto",
+  width: "fit-content",
+  [theme.breakpoints.down("sm")]: {
+    gridTemplateColumns: "1fr",
+  },
+}));
 
 export default function PetPage() {
   const auth = useAuth();
@@ -95,7 +106,7 @@ export default function PetPage() {
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
       petId,
-      boardLimit: 10,
+      boardLimit: 50,
       petLimit: 2,
       authToken: auth.token,
     },
@@ -135,7 +146,7 @@ export default function PetPage() {
 
   return (
     <ContentLayout title={`Dashboard for ${trackableObjectData?.details.name}`}>
-      <Stack p={2} direction="row" spacing={2}>
+      <Root>
         <ManageTrackerSection
           trackableObjectData={trackableObjectData}
           bulkData={bulkData}
@@ -147,7 +158,7 @@ export default function PetPage() {
           selectedLeaderboardType={selectedLeaderboardType}
           setSelectedLeaderboardType={setSelectedLeaderboardType}
         />
-      </Stack>
+      </Root>
     </ContentLayout>
   );
 }

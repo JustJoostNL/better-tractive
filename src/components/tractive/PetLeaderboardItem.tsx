@@ -4,6 +4,7 @@ import {
   ListItemAvatar,
   ListItemText,
   Typography,
+  Box,
 } from "@mui/material";
 import Image from "next/image";
 import { PetsRounded } from "@mui/icons-material";
@@ -35,12 +36,32 @@ export const PetLeaderboardItem: FC<IProps> = ({ item }) => {
   }, []);
 
   return (
-    <ListItem>
-      <Typography variant="h3" sx={{ mr: 2 }}>
-        #{item.rank}
-      </Typography>
+    <ListItem
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        "&:nth-of-type(odd)": {
+          backgroundColor: "rgba(0, 0, 0, 0.2)",
+        },
+      }}
+    >
+      <Box
+        sx={{
+          mr: 2,
+          width: "3rem",
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="h3">#{item.rank}</Typography>
+      </Box>
 
-      <ListItemAvatar sx={{ width: 50, height: 50, mr: 1 }}>
+      <ListItemAvatar
+        sx={{
+          width: 50,
+          height: 50,
+          mr: 1,
+        }}
+      >
         {imageId ? (
           <Image
             src={imageId}
@@ -59,7 +80,8 @@ export const PetLeaderboardItem: FC<IProps> = ({ item }) => {
       </ListItemAvatar>
       <ListItemText
         primary={capitalizePetName(item.name)}
-        secondary={item.score}
+        secondary={`${item.score} minutes`}
+        sx={{ ml: 1 }}
       />
     </ListItem>
   );
