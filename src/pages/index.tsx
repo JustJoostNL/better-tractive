@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { Typography } from "@mui/material";
 import { ContentLayout } from "@/components/layouts/ContentLayout";
 import { useAuth } from "@/hooks/useAuth";
-import { getUser } from "@/lib/tractive/api";
+import { getTrackableObjects, getUser } from "@/lib/tractive/api";
 import { Loader } from "@/components/shared/Loader";
 import { PetList } from "@/components/tractive/PetList";
 import { useMutateDebugState } from "@/hooks/useMutateDebugState";
@@ -11,7 +11,7 @@ import { useMutateDebugState } from "@/hooks/useMutateDebugState";
 export default function Index() {
   const auth = useAuth();
 
-  const { data, isLoading } = useSWR(
+  const { data: userData, isLoading: isUserDataLoading } = useSWR(
     {
       type: "user",
       userId: auth.userId,
@@ -24,7 +24,25 @@ export default function Index() {
     },
   );
 
-  useMutateDebugState("user", data);
+  const {
+    data: trackableObjectsData,
+    isLoading: isTrackableObjectDataLoading,
+  } = useSWR(
+    {
+      type: "trackable_objects",
+      userId: auth.userId,
+      authToken: auth.token,
+    },
+    getTrackableObjects,
+    {
+      revalidateOnFocus: false,
+      refreshInterval: 1000 * 60 * 1, // 1 minute
+    },
+  );
+
+  useMutateDebugState("user", userData);
+
+  const isLoading = isUserDataLoading || isTrackableObjectDataLoading;
 
   if (isLoading) {
     return (
@@ -35,10 +53,10 @@ export default function Index() {
   }
 
   const name =
-    (data?.details.first_name && data?.details.last_name) !== undefined
-      ? `${data?.details.first_name} ${data?.details.last_name}`
-      : data?.details.first_name
-        ? data?.details.first_name
+    (userData?.details.first_name && userData?.details.last_name) !== undefined
+      ? `${userData?.details.first_name} ${userData?.details.last_name}`
+      : userData?.details.first_name
+        ? userData?.details.first_name
         : "User";
 
   return (
@@ -51,7 +69,7 @@ export default function Index() {
         Please select a pet you would like to view.
       </Typography>
 
-      <PetList />
+      <PetList trackableObjectsData={trackableObjectsData} />
     </ContentLayout>
   );
 }

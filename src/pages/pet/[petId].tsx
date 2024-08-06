@@ -1,6 +1,5 @@
 import { styled, Typography } from "@mui/material";
-import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { ContentLayout } from "@/components/layouts/ContentLayout";
@@ -16,14 +15,15 @@ import { Loader } from "@/components/shared/Loader";
 import { ManageTrackerSection } from "@/components/tractive/ManageTrackerSection";
 import { formatErrorMessage, LeaderboardType } from "@/lib/tractive/api_utils";
 import { PetLeaderboardSection } from "@/components/tractive/PetLeaderboardSection";
+import { TrackYourPetSection } from "@/components/tractive/TrackYourPetSection";
 
 const Root = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "1fr 1fr",
+  gridTemplateColumns: "repeat(3, 1fr)",
   gap: theme.spacing(2),
   margin: "auto",
   width: "fit-content",
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down("md")]: {
     gridTemplateColumns: "1fr",
   },
 }));
@@ -34,14 +34,6 @@ export default function PetPage() {
   const { petId } = router.query as { petId: string };
   const [selectedLeaderboardType, setSelectedLeaderboardType] =
     useState<LeaderboardType>(LeaderboardType.LOCAL);
-
-  const _TractiveMap = useMemo(
-    () =>
-      dynamic(() => import("@/components/tractive/TractiveMap"), {
-        ssr: false,
-      }),
-    [],
-  );
 
   const { data: trackableObjectData, error: trackableObjectError } = useSWR(
     {
@@ -151,6 +143,8 @@ export default function PetPage() {
           bulkData={bulkData}
           mutateBulkData={mutateBulkData}
         />
+
+        <TrackYourPetSection petId={petId} />
 
         <PetLeaderboardSection
           leaderboardData={leaderbordData}

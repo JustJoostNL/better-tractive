@@ -1,15 +1,9 @@
 export const tractiveBaseUrl = "https://graph.tractive.com";
 export const tractiveProxyUrl =
   typeof window !== "undefined"
-    ? `${window.location.origin}/api/corsproxy?url=${tractiveBaseUrl}`
-    : `/api/corsproxy?url=${tractiveBaseUrl}`;
+    ? `${window.location.origin}/api/crsp?url=${tractiveBaseUrl}`
+    : `/api/crsp?url=${tractiveBaseUrl}`;
 export const tractiveClientId = "5728aa1fc9077f7c32000186";
-
-export function proxyUrl(url: string) {
-  return typeof window !== "undefined"
-    ? `${window.location.origin}/api/corsproxy?url=${url}`
-    : `/api/corsproxy?url=${url}`;
-}
 
 export enum TrackerCommand {
   LiveTracking = "live_tracking",

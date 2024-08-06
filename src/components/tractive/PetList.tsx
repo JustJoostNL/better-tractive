@@ -1,9 +1,7 @@
 import { FC } from "react";
-import useSWR from "swr";
 import { styled, Typography } from "@mui/material";
 import { PetListCard } from "./PetListCard";
-import { useAuth } from "@/hooks/useAuth";
-import { getTrackableObjects } from "@/lib/tractive/api";
+import { IObjectListResponse } from "@/lib/tractive/api_types";
 
 export const Root = styled("div")(({ theme }) => ({
   display: "grid",
@@ -12,23 +10,12 @@ export const Root = styled("div")(({ theme }) => ({
   margin: theme.spacing(2),
 }));
 
-export const PetList: FC = () => {
-  const auth = useAuth();
+interface IProps {
+  trackableObjectsData: IObjectListResponse | undefined;
+}
 
-  const { data } = useSWR(
-    {
-      type: "trackable_objects",
-      userId: auth.userId,
-      authToken: auth.token,
-    },
-    getTrackableObjects,
-    {
-      revalidateOnFocus: false,
-      refreshInterval: 1000 * 60 * 1, // 1 minute
-    },
-  );
-
-  if (data?.length === 0) {
+export const PetList: FC<IProps> = ({ trackableObjectsData }) => {
+  if (trackableObjectsData?.length === 0) {
     return (
       <Root>
         <Typography variant="h6" color="text.secondary">
@@ -40,7 +27,9 @@ export const PetList: FC = () => {
 
   return (
     <Root>
-      {data?.map((pet) => <PetListCard key={pet._id} petId={pet._id} />)}
+      {trackableObjectsData?.map((pet) => (
+        <PetListCard key={pet._id} petId={pet._id} />
+      ))}
     </Root>
   );
 };

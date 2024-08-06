@@ -49,7 +49,7 @@ const TractiveMap: FC<IProps> = ({ petId }) => {
   if (!trackableObjectData || !devicePosReportData) return <Loader />;
 
   return (
-    <div style={{ height: "100vh", width: "100%", position: "relative" }}>
+    <React.Fragment>
       <MapContainer
         center={[
           devicePosReportData.latlong[0],
@@ -78,7 +78,7 @@ const TractiveMap: FC<IProps> = ({ petId }) => {
           ]}
         />
       </MapContainer>
-    </div>
+    </React.Fragment>
   );
 };
 
