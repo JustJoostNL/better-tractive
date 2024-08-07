@@ -10,6 +10,7 @@ import {
   ILeaderboardResponse,
   IMutateTrackerStateResponse,
   IObjectListResponse,
+  IPetRecordsResponse,
   IPositionHistoryResponse,
   IRequestExportResponse,
   ITrackableObjectResponse,
@@ -417,7 +418,7 @@ export async function getPetRecords({
 }: {
   petId: string;
   authToken: string;
-}): Promise<IObjectListResponse> {
+}): Promise<IPetRecordsResponse> {
   const response = await fetch(
     tractiveProxyUrl + petRecordsPath(petId),
     composeFetchOptions("GET", authToken),

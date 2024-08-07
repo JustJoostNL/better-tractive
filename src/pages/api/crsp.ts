@@ -61,6 +61,7 @@ export default async function handler(
 
     return res.status(response.status).send(await response.text());
   } catch (error: any) {
+    console.error(error);
     res.status(500).json({ error: error.message });
   }
 }

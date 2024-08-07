@@ -8,6 +8,7 @@ import {
   getDevicePosReport,
   getGeofences,
   getLeaderboard,
+  getPetRecords,
   getTrackableObject,
   getTracker,
 } from "@/lib/tractive/api";
@@ -18,6 +19,7 @@ import { ManageTrackerSection } from "@/components/tractive/ManageTrackerSection
 import { formatErrorMessage, LeaderboardType } from "@/lib/tractive/api_utils";
 import { PetLeaderboardSection } from "@/components/tractive/PetLeaderboardSection";
 import { TrackYourPetSection } from "@/components/tractive/TrackYourPetSection";
+import { PetRecordsSection } from "@/components/tractive/PetRecordsSection";
 
 const Root = styled("div")(({ theme }) => ({
   display: "grid",
@@ -49,6 +51,16 @@ export default function PetPage() {
       authToken: auth.token,
     },
     petId ? getTrackableObject : null,
+    swrOptions,
+  );
+
+  const { data: petRecordsData } = useSWR(
+    {
+      type: `pet_records-${petId}`,
+      petId,
+      authToken: auth.token,
+    },
+    petId ? getPetRecords : null,
     swrOptions,
   );
 
@@ -141,7 +153,8 @@ export default function PetPage() {
     !trackerData ||
     !bulkData ||
     !geofencesData ||
-    !devicePosReportData;
+    !devicePosReportData ||
+    !petRecordsData;
   const isError =
     trackableObjectError || trackerError || bulkError || leaderboardError;
 
@@ -185,6 +198,8 @@ export default function PetPage() {
           trackableObjectData={trackableObjectData}
           devicePosReportData={devicePosReportData}
         />
+
+        <PetRecordsSection petRecordsData={petRecordsData} />
 
         <PetLeaderboardSection
           leaderboardData={leaderbordData}

@@ -94,7 +94,7 @@ export function leaderbordPath(
 }
 
 export function petRecordsPath(petId: string) {
-  return `4/activity/${petId}/day/records`;
+  return `/4/activity/${petId}/day/records`;
 }
 
 export function requestExportPath(

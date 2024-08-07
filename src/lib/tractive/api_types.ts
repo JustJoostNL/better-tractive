@@ -343,3 +343,29 @@ export enum Gender {
   F = "F",
   M = "M",
 }
+
+export interface IPetRecordsResponse {
+  pet_id: string;
+  records: Records;
+  averages: Averages;
+}
+
+export interface Averages {
+  active: number;
+  resting: number;
+  calories: number;
+  sleeping: number;
+}
+
+export interface Records {
+  best_day: BestDay;
+  longest_streak: BestDay;
+}
+
+export interface BestDay {
+  local_day: number;
+  local_month: number;
+  local_year: number;
+  minutes?: number;
+  days?: number;
+}
