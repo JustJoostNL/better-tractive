@@ -258,7 +258,7 @@ export enum SensorUsed {
   KNOWN_WIFI = "KNOWN_WIFI",
 }
 
-export type IGeofenceResponse = IGeofenceItem[];
+export type IGeofencesResponse = IGeofenceItem[];
 export interface IGeofenceItem {
   _id: string;
   _type: string;

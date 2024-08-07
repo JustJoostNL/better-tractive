@@ -1,10 +1,11 @@
 import { styled, Typography } from "@mui/material";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { ContentLayout } from "@/components/layouts/ContentLayout";
 import {
   getBulkData,
+  getGeofences,
   getLeaderboard,
   getTrackableObject,
   getTracker,
@@ -28,6 +29,11 @@ const Root = styled("div")(({ theme }) => ({
   },
 }));
 
+const swrOptions = {
+  revalidateOnFocus: false,
+  refreshInterval: 1000 * 30, // 30 seconds
+};
+
 export default function PetPage() {
   const auth = useAuth();
   const router = useRouter();
@@ -42,23 +48,40 @@ export default function PetPage() {
       authToken: auth.token,
     },
     petId ? getTrackableObject : null,
-    {
-      revalidateOnFocus: false,
-      refreshInterval: 1000 * 30, // 30 seconds
-    },
+    swrOptions,
   );
+
+  const trackerId = trackableObjectData?.device_id;
 
   const { data: trackerData, error: trackerError } = useSWR(
     {
-      type: `tracker-${trackableObjectData?.device_id}`,
-      trackerId: trackableObjectData?.device_id,
+      type: `tracker-${trackerId}`,
+      trackerId,
       authToken: auth.token,
     },
-    trackableObjectData?.device_id ? getTracker : null,
+    trackerId ? getTracker : null,
+    swrOptions,
+  );
+
+  const { data: geofencesData } = useSWR(
     {
-      revalidateOnFocus: false,
-      refreshInterval: 1000 * 30, // 30 seconds
+      type: `geofence-${trackerId}`,
+      trackerId,
+      authToken: auth.token,
     },
+    trackerId ? getGeofences : null,
+    swrOptions,
+  );
+
+  const geofences = useMemo(
+    () =>
+      geofencesData?.map((geofence) => {
+        return {
+          id: geofence._id,
+          type: "geofence",
+        };
+      }),
+    [geofencesData],
   );
 
   const {
@@ -67,28 +90,26 @@ export default function PetPage() {
     mutate: mutateBulkData,
   } = useSWR(
     {
-      type: `bulk_data-${trackableObjectData?.device_id}`,
+      type: `bulk_data-${trackerId}`,
       wantedItems: [
         {
-          id: `${trackableObjectData?.device_id}_live_tracking`,
+          id: `${trackerId}_live_tracking`,
           type: "tracker_command_state",
         },
         {
-          id: `${trackableObjectData?.device_id}_led_control`,
+          id: `${trackerId}_led_control`,
           type: "tracker_command_state",
         },
         {
-          id: `${trackableObjectData?.device_id}_buzzer_control`,
+          id: `${trackerId}_buzzer_control`,
           type: "tracker_command_state",
         },
+        ...(geofences ?? []),
       ],
       authToken: auth.token,
     },
-    trackableObjectData?.device_id ? getBulkData : null,
-    {
-      revalidateOnFocus: false,
-      refreshInterval: 1000 * 30, // 30 seconds
-    },
+    trackerId ? getBulkData : null,
+    swrOptions,
   );
 
   const { data: leaderbordData, error: leaderboardError } = useSWR(
@@ -103,25 +124,23 @@ export default function PetPage() {
       authToken: auth.token,
     },
     petId ? getLeaderboard : null,
-    {
-      revalidateOnFocus: false,
-      refreshInterval: 1000 * 30, // 30 seconds
-    },
+    swrOptions,
   );
 
   const isLoading = !trackableObjectData || !trackerData || !bulkData;
-  const error =
+  const isError =
     trackableObjectError || trackerError || bulkError || leaderboardError;
 
   useMutateDebugState("trackableObject", trackableObjectData);
   useMutateDebugState("tracker", trackerData);
   useMutateDebugState("bulk", bulkData);
+  useMutateDebugState("geofences", geofencesData);
 
-  if (error) {
+  if (isError) {
     return (
       <ContentLayout title="Pet" hideTitle>
         <Typography variant="h3" color="error" p={2}>
-          {formatErrorMessage(error)}
+          {formatErrorMessage(isError)}
         </Typography>
       </ContentLayout>
     );
@@ -144,7 +163,7 @@ export default function PetPage() {
           mutateBulkData={mutateBulkData}
         />
 
-        <TrackYourPetSection petId={petId} />
+        <TrackYourPetSection petId={petId} bulkData={bulkData} />
 
         <PetLeaderboardSection
           leaderboardData={leaderbordData}

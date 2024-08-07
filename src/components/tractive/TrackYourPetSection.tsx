@@ -3,12 +3,14 @@ import { FC, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { OpenInNewRounded } from "@mui/icons-material";
 import { FullScreenMapDialog } from "./FullScreenMapDialog";
+import { IBulkResponse } from "@/lib/tractive/api_types";
 
 interface IProps {
   petId: string;
+  bulkData: IBulkResponse;
 }
 
-export const TrackYourPetSection: FC<IProps> = ({ petId }) => {
+export const TrackYourPetSection: FC<IProps> = ({ petId, bulkData }) => {
   const [isFullScreenMapDialogOpen, setIsFullScreenMapDialogOpen] =
     useState(false);
 
@@ -18,6 +20,11 @@ export const TrackYourPetSection: FC<IProps> = ({ petId }) => {
         ssr: false,
       }),
     [],
+  );
+
+  const geofences = useMemo(
+    () => bulkData.filter((item) => item._type === "geofence"),
+    [bulkData],
   );
 
   return (
@@ -40,7 +47,7 @@ export const TrackYourPetSection: FC<IProps> = ({ petId }) => {
           justifyContent: "center",
         }}
       >
-        <TractiveMap petId={petId} />
+        <TractiveMap petId={petId} geofences={geofences} />
 
         <Stack direction="row" spacing={2} justifyContent="center" mt={5}>
           <Button

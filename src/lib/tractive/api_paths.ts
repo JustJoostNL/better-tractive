@@ -74,10 +74,6 @@ export function geofencesPath(trackerId: string) {
   return `/4/tracker/${trackerId}/geofences`;
 }
 
-export function geofencePath(fenceId: string) {
-  return `/4/geofence/${fenceId}`;
-}
-
 export function leaderbordPath(
   petId: string,
   boardType: LeaderboardType,

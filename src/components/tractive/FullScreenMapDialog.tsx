@@ -17,8 +17,6 @@ export const FullScreenMapDialog: FC<IProps> = ({ petId, open, onClose }) => {
     [],
   );
 
-  console.log("FullScreenMapDialog", petId, open, onClose);
-
   return (
     <Dialog
       open={open}

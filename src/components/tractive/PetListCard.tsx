@@ -42,13 +42,15 @@ export const PetListCard: FC<IProps> = ({ petId }) => {
     },
   );
 
+  const trackerId = trackableObjectData?.device_id;
+
   const { data: trackerData } = useSWR(
     {
-      type: `tracker-${trackableObjectData?.device_id}`,
-      trackerId: trackableObjectData?.device_id,
+      type: `tracker-${trackerId}`,
+      trackerId,
       authToken: auth.token,
     },
-    trackableObjectData?.device_id ? getTracker : null,
+    trackerId ? getTracker : null,
     {
       revalidateOnFocus: false,
       refreshInterval: 1000 * 30, // 30 seconds
@@ -57,11 +59,11 @@ export const PetListCard: FC<IProps> = ({ petId }) => {
 
   const { data: hwReportData } = useSWR(
     {
-      type: `hwreport-${trackableObjectData?.device_id}`,
-      trackerId: trackableObjectData?.device_id,
+      type: `hwreport-${trackerId}`,
+      trackerId,
       authToken: auth.token,
     },
-    trackableObjectData?.device_id ? getDeviceHardwareReport : null,
+    trackerId ? getDeviceHardwareReport : null,
     {
       revalidateOnFocus: false,
       refreshInterval: 1000 * 30, // 30 seconds

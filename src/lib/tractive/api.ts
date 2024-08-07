@@ -6,7 +6,7 @@ import {
   IDeviceHWReportResponse,
   IDevicePosReportResponse,
   IExportStatusResponse,
-  IGeofenceResponse,
+  IGeofencesResponse,
   ILeaderboardResponse,
   IMutateTrackerStateResponse,
   IObjectListResponse,
@@ -39,7 +39,6 @@ import {
   weightActivityHistoryPath,
   positionHistoryPath,
   trackerCommandPath,
-  geofencePath,
   geofencesPath,
   requestExportPath,
   exportStatusPath,
@@ -399,7 +398,7 @@ export async function getGeofences({
 }: {
   trackerId: string;
   authToken: string;
-}): Promise<IGeofenceResponse> {
+}): Promise<IGeofencesResponse> {
   const response = await fetch(
     tractiveProxyUrl + geofencesPath(trackerId),
     composeFetchOptions("GET", authToken),
@@ -407,26 +406,6 @@ export async function getGeofences({
 
   if (!response.ok) {
     throw new TractiveApiError("Failed to get geofences", response);
-  }
-
-  const json = await response.json();
-  return json;
-}
-
-export async function getGeofence({
-  fenceId,
-  authToken,
-}: {
-  fenceId: string;
-  authToken: string;
-}): Promise<unknown[]> {
-  const response = await fetch(
-    tractiveProxyUrl + geofencePath(fenceId),
-    composeFetchOptions("GET", authToken),
-  );
-
-  if (!response.ok) {
-    throw new TractiveApiError("Failed to get geofence", response);
   }
 
   const json = await response.json();
