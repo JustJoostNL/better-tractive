@@ -31,6 +31,7 @@ export const TrackYourPetSection: FC<IProps> = ({ petId, bulkData }) => {
     <Card>
       <FullScreenMapDialog
         petId={petId}
+        geofences={geofences}
         open={isFullScreenMapDialogOpen}
         onClose={() => setIsFullScreenMapDialogOpen(false)}
       />

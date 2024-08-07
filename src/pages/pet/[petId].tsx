@@ -75,12 +75,10 @@ export default function PetPage() {
 
   const geofences = useMemo(
     () =>
-      geofencesData?.map((geofence) => {
-        return {
-          id: geofence._id,
-          type: "geofence",
-        };
-      }),
+      geofencesData?.map(({ _id }) => ({
+        id: _id,
+        type: "geofence",
+      })),
     [geofencesData],
   );
 

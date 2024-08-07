@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -8,49 +8,138 @@ import {
   Button,
   Box,
   Stack,
+  IconButton,
+  Menu,
+  MenuItem,
 } from "@mui/material";
-import { NavbarMenu } from "./NavbarMenu";
+import Image from "next/image";
+import useSWR from "swr";
+import { useAuth } from "@/hooks/useAuth";
+import { getUser } from "@/lib/tractive/api";
+import { tractiveBaseUrl } from "@/lib/tractive/api_utils";
+import { mediaProfilePath } from "@/lib/tractive/api_paths";
 
-const navbarContent: { href: string; children: string }[] = [];
+const navbarContent: { href: string; children: string }[] = [
+  {
+    href: "/",
+    children: "Home",
+  },
+];
 
 export const Navbar: FC = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const auth = useAuth();
+
+  const handleAvatarClick = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget);
+    },
+    [],
+  );
+
+  const handleCloseMenu = useCallback(() => {
+    setAnchorEl(null);
+  }, []);
+
+  const handleSignoutClick = useCallback(() => {
+    auth.signOut();
+  }, [auth]);
+
+  const { data: userData } = useSWR(
+    {
+      type: "user",
+      userId: auth.userId,
+      authToken: auth.token,
+    },
+    getUser,
+    {
+      revalidateOnFocus: false,
+      refreshInterval: 1000 * 60 * 1, // 1 minute
+    },
+  );
+
+  const avatarUri = useMemo(
+    () =>
+      userData?.profile_picture_id
+        ? tractiveBaseUrl +
+          mediaProfilePath(userData?._id, {
+            width: 512,
+            height: 512,
+          })
+        : null,
+    [userData?._id, userData?.profile_picture_id],
+  );
+
+  const open = Boolean(anchorEl);
+
   return (
-    <>
-      <AppBar
-        variant="elevation"
-        sx={{
-          backgroundColor: alpha(lighten("#000", 0.1), 0.9),
-          backdropFilter: "blur(10px) saturate(180%)",
-        }}
-        position="sticky"
-      >
-        <Toolbar>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              flexGrow: 1,
-              fontSize: "2rem",
-            }}
-          >
-            Better Tractive
-          </Typography>
+    <AppBar
+      variant="elevation"
+      sx={{
+        backgroundColor: alpha(lighten("#000", 0.1), 0.9),
+        backdropFilter: "blur(10px) saturate(180%)",
+      }}
+      position="sticky"
+    >
+      <Toolbar>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{
+            flexGrow: 1,
+            fontSize: "2rem",
+          }}
+        >
+          Better Tractive
+        </Typography>
 
-          <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ flexGrow: 1 }} />
 
-          <Box sx={{ display: { xs: "none", md: "block" }, mr: 5 }}>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              {navbarContent.map((item, index) => (
-                <Button key={index} sx={{ fontWeight: "bold" }} color="inherit">
-                  {item.children}
-                </Button>
-              ))}
-            </Stack>
-          </Box>
+        <Box sx={{ display: { xs: "none", md: "block" }, mr: 5 }}>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            {navbarContent.map((item, index) => (
+              <Button
+                key={index}
+                sx={{ fontWeight: "bold" }}
+                color="inherit"
+                href={item.href}
+              >
+                {item.children}
+              </Button>
+            ))}
+          </Stack>
+        </Box>
 
-          <NavbarMenu />
-        </Toolbar>
-      </AppBar>
-    </>
+        {auth.isAuthenticated && avatarUri && (
+          <Stack direction="row" spacing={2} alignItems="center">
+            <IconButton onClick={handleAvatarClick} size="medium">
+              <Image
+                src={avatarUri}
+                alt=""
+                width={45}
+                height={45}
+                quality={100}
+                style={{ borderRadius: "50%" }}
+              />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleCloseMenu}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <MenuItem onClick={handleSignoutClick}>Sign out</MenuItem>
+            </Menu>
+          </Stack>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 };

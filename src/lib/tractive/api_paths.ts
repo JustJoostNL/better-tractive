@@ -41,6 +41,13 @@ export function mediaResourcePath(
   return `/4/media/resource/${mediaId}.${size.width.toString()}_${size.height.toString()}_1.jpg`;
 }
 
+export function mediaProfilePath(
+  userId: string,
+  size: { width: string | number; height: string | number },
+) {
+  return `/4/media/profile/${userId}.${size.width.toString()}_${size.height.toString()}_1.jpg`;
+}
+
 export function weightActivityHistoryPath(trackableObjectId: string) {
   return `/4/weight_activity_history/${trackableObjectId}`;
 }
