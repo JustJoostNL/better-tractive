@@ -4,58 +4,28 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import useSWR from "swr";
 import { Typography } from "@mui/material";
 import { Loader } from "../shared/Loader";
 import { MapGeofence } from "./MapGeofence";
-import { getDevicePosReport, getTrackableObject } from "@/lib/tractive/api";
-import { useAuth } from "@/hooks/useAuth";
-import { useMutateDebugState } from "@/hooks/useMutateDebugState";
-import { BulkItem } from "@/lib/tractive/api_types";
+import {
+  BulkItem,
+  IDevicePosReportResponse,
+  ITrackableObjectResponse,
+} from "@/lib/tractive/api_types";
 import { tractiveBaseUrl } from "@/lib/tractive/api_utils";
 import { mediaResourcePath } from "@/lib/tractive/api_paths";
 
 interface IProps {
-  petId: string;
+  trackableObjectData: ITrackableObjectResponse;
+  devicePosReportData: IDevicePosReportResponse;
   geofences: BulkItem[];
 }
 
-const TractiveMap: FC<IProps> = ({ petId, geofences }) => {
-  const auth = useAuth();
-
-  const { data: trackableObjectData } = useSWR(
-    {
-      type: `trackable_objects-${petId}`,
-      trackableObjectId: petId,
-      authToken: auth.token,
-    },
-    getTrackableObject,
-    {
-      revalidateOnFocus: false,
-      refreshInterval: 1000 * 30, // 30 seconds
-    },
-  );
-
-  const trackerId = trackableObjectData?.device_id;
-
-  const { data: devicePosReportData } = useSWR(
-    {
-      type: `device_pos_report-${trackerId}`,
-      trackerId,
-      authToken: auth.token,
-    },
-    trackerId ? getDevicePosReport : null,
-    {
-      revalidateOnFocus: false,
-      refreshInterval: 1000 * 30, // 30 seconds
-    },
-  );
-
-  useMutateDebugState("geofences", geofences);
-  useMutateDebugState("trackableObject", trackableObjectData);
-  useMutateDebugState("devicePosReport", devicePosReportData);
-  useMutateDebugState("devicePosReport", devicePosReportData);
-
+const TractiveMap: FC<IProps> = ({
+  geofences,
+  trackableObjectData,
+  devicePosReportData,
+}) => {
   if (!trackableObjectData || !devicePosReportData) return <Loader />;
 
   return (

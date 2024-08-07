@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import useSWR from "swr";
+import { ExitToAppRounded } from "@mui/icons-material";
 import { useAuth } from "@/hooks/useAuth";
 import { getUser } from "@/lib/tractive/api";
 import { tractiveBaseUrl } from "@/lib/tractive/api_utils";
@@ -135,7 +136,24 @@ export const Navbar: FC = () => {
                 horizontal: "right",
               }}
             >
-              <MenuItem onClick={handleSignoutClick}>Sign out</MenuItem>
+              <Typography
+                variant="h6"
+                color="text.primary"
+                ml={2}
+                mr={2}
+                mb={1}
+              >
+                {userData?.details.first_name} {userData?.details.last_name}
+              </Typography>
+
+              <MenuItem onClick={handleSignoutClick}>
+                <ExitToAppRounded
+                  fontSize="small"
+                  color="error"
+                  sx={{ mr: 1, alignSelf: "center" }}
+                />
+                Sign out
+              </MenuItem>
             </Menu>
           </Stack>
         )}

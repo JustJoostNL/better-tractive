@@ -45,6 +45,7 @@ import {
   exportDownloadPath,
   bulkRequestPath,
   leaderbordPath,
+  demoAuthUserPath,
 } from "./api_paths";
 
 export async function getAuthToken(
@@ -62,6 +63,23 @@ export async function getAuthToken(
 
   if (!response.ok) {
     throw new TractiveApiError("Failed to get auth token", response);
+  }
+
+  const json: IAuthTokenResponse = await response.json();
+  return { token: json.access_token, userId: json.user_id };
+}
+
+export async function registerDemoUser(): Promise<{
+  token: string | undefined;
+  userId: string | undefined;
+}> {
+  const response = await fetch(
+    tractiveProxyUrl + demoAuthUserPath,
+    composeFetchOptions("POST", "", { language: "en" }),
+  );
+
+  if (!response.ok) {
+    throw new TractiveApiError("Failed to register demo user", response);
   }
 
   const json: IAuthTokenResponse = await response.json();

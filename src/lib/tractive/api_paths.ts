@@ -1,6 +1,7 @@
 import { TrackerCommand, ExportFormat, LeaderboardType } from "./api_utils";
 
 export const authTokenPath = "/4/auth/token";
+export const demoAuthUserPath = "/4/auth/register_demo_user";
 
 export function userPath(userId: string) {
   return `/4/user/${userId}`;

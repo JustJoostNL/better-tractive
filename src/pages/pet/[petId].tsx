@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { ContentLayout } from "@/components/layouts/ContentLayout";
 import {
   getBulkData,
+  getDevicePosReport,
   getGeofences,
   getLeaderboard,
   getTrackableObject,
@@ -125,13 +126,32 @@ export default function PetPage() {
     swrOptions,
   );
 
-  const isLoading = !trackableObjectData || !trackerData || !bulkData;
+  const { data: devicePosReportData } = useSWR(
+    {
+      type: `device_pos_report-${trackerId}`,
+      trackerId,
+      authToken: auth.token,
+    },
+    trackerId ? getDevicePosReport : null,
+    swrOptions,
+  );
+
+  const isLoading =
+    !trackableObjectData ||
+    !trackerData ||
+    !bulkData ||
+    !geofencesData ||
+    !leaderbordData ||
+    !devicePosReportData;
   const isError =
     trackableObjectError || trackerError || bulkError || leaderboardError;
 
   useMutateDebugState("trackableObject", trackableObjectData);
   useMutateDebugState("tracker", trackerData);
+  useMutateDebugState("tracker", trackerData);
   useMutateDebugState("bulk", bulkData);
+  useMutateDebugState("leaderboard", leaderbordData);
+  useMutateDebugState("devicePosReport", devicePosReportData);
   useMutateDebugState("geofences", geofencesData);
 
   if (isError) {
@@ -161,7 +181,12 @@ export default function PetPage() {
           mutateBulkData={mutateBulkData}
         />
 
-        <TrackYourPetSection petId={petId} bulkData={bulkData} />
+        <TrackYourPetSection
+          petId={petId}
+          bulkData={bulkData}
+          trackableObjectData={trackableObjectData}
+          devicePosReportData={devicePosReportData}
+        />
 
         <PetLeaderboardSection
           leaderboardData={leaderbordData}

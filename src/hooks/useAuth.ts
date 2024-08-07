@@ -16,7 +16,9 @@ export function useAuth({ skipAuthCheck }: IProps = { skipAuthCheck: false }) {
   const isAuthenticated = !!tractive_token;
 
   if (typeof window !== "undefined" && !isAuthenticated && !skipAuthCheck) {
-    router.push(`/login?r=${router.pathname}`);
+    if (router.pathname !== "/login") {
+      router.push(`/login?r=${router.pathname}`);
+    }
   }
 
   const handleSignIn = useCallback(

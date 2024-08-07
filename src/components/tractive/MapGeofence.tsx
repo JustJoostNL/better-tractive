@@ -10,7 +10,12 @@ interface IProps {
 export const MapGeofence: FC<IProps> = ({ geofence }) => {
   if (!geofence.coords || !geofence.shape || !geofence.radius) return null;
 
-  const color = geofence.fence_type === "SAFE" ? "green" : "red";
+  const color =
+    geofence.fence_type === "SAFE"
+      ? "green"
+      : geofence.fence_type === "DANGER"
+        ? "red"
+        : "grey";
 
   if (geofence.shape === "CIRCLE") {
     return (
@@ -21,6 +26,8 @@ export const MapGeofence: FC<IProps> = ({ geofence }) => {
       />
     );
   }
+
+  //TODO add support for RECTANGLE
 
   if (geofence.shape === "POLYGON") {
     return (

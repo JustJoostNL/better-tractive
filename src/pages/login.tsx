@@ -9,7 +9,7 @@ import { useCallback, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { ContentLayout } from "@/components/layouts/ContentLayout";
 import { useAuth } from "@/hooks/useAuth";
-import { getAuthToken } from "@/lib/tractive/api";
+import { getAuthToken, registerDemoUser } from "@/lib/tractive/api";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -33,6 +33,23 @@ export default function LoginPage() {
     }
   }, [auth, emailValue, passwordValue]);
 
+  const handleDemoMode = useCallback(async () => {
+    const { token, userId } = await registerDemoUser();
+    if (!token || !userId) {
+      enqueueSnackbar("Failed to register demo user", { variant: "error" });
+      return;
+    }
+
+    auth.signIn(token, userId);
+  }, [auth]);
+
+  const handleKeyDownEvent = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Enter") handleLogin();
+    },
+    [handleLogin],
+  );
+
   return (
     <ContentLayout title="Login">
       <Container>
@@ -52,6 +69,7 @@ export default function LoginPage() {
             }
             error={Boolean(emailValue && !emailRegex.test(emailValue))}
             onChange={(e) => setEmailValue(e.target.value)}
+            onKeyDown={handleKeyDownEvent}
             margin="normal"
             required
           />
@@ -60,6 +78,7 @@ export default function LoginPage() {
             type="password"
             value={passwordValue}
             onChange={(e) => setPasswordValue(e.target.value)}
+            onKeyDown={handleKeyDownEvent}
             margin="normal"
             required
           />
@@ -67,13 +86,23 @@ export default function LoginPage() {
           <Button
             variant="contained"
             color="primary"
-            disabled={!emailValue || !passwordValue}
+            disabled={
+              !emailValue || !passwordValue || !emailRegex.test(emailValue)
+            }
             sx={{ mt: 2 }}
             onClick={handleLogin}
           >
             Login
           </Button>
         </FormControl>
+
+        <Typography variant="body2" mt={2} mb={2}>
+          Don't have an Tractive account? Try the demo mode!
+        </Typography>
+
+        <Button variant="outlined" color="primary" onClick={handleDemoMode}>
+          Try demo mode
+        </Button>
       </Container>
     </ContentLayout>
   );
