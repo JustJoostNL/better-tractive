@@ -141,13 +141,11 @@ export default function PetPage() {
     !trackerData ||
     !bulkData ||
     !geofencesData ||
-    !leaderbordData ||
     !devicePosReportData;
   const isError =
     trackableObjectError || trackerError || bulkError || leaderboardError;
 
   useMutateDebugState("trackableObject", trackableObjectData);
-  useMutateDebugState("tracker", trackerData);
   useMutateDebugState("tracker", trackerData);
   useMutateDebugState("bulk", bulkData);
   useMutateDebugState("leaderboard", leaderbordData);

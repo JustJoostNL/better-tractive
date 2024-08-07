@@ -46,6 +46,7 @@ import {
   bulkRequestPath,
   leaderbordPath,
   demoAuthUserPath,
+  petRecordsPath,
 } from "./api_paths";
 
 export async function getAuthToken(
@@ -404,6 +405,26 @@ export async function getLeaderboard({
 
   if (!response.ok) {
     throw new TractiveApiError("Failed to get leaderboard", response);
+  }
+
+  const json = await response.json();
+  return json;
+}
+
+export async function getPetRecords({
+  petId,
+  authToken,
+}: {
+  petId: string;
+  authToken: string;
+}): Promise<IObjectListResponse> {
+  const response = await fetch(
+    tractiveProxyUrl + petRecordsPath(petId),
+    composeFetchOptions("GET", authToken),
+  );
+
+  if (!response.ok) {
+    throw new TractiveApiError("Failed to get pet records", response);
   }
 
   const json = await response.json();

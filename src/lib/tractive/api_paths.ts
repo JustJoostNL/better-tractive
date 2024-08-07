@@ -93,6 +93,10 @@ export function leaderbordPath(
   return `/4/stream/boards/${boardType}?board_limit=${boardLimit}&pet_id=${petId}&pet_limit=${petLimit}&local_year=${year}&local_month=${month}`;
 }
 
+export function petRecordsPath(petId: string) {
+  return `4/activity/${petId}/day/records`;
+}
+
 export function requestExportPath(
   trackerId: string,
   timeFrom: number,

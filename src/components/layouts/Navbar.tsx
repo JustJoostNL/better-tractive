@@ -15,6 +15,7 @@ import {
 import Image from "next/image";
 import useSWR from "swr";
 import { ExitToAppRounded } from "@mui/icons-material";
+import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { getUser } from "@/lib/tractive/api";
 import { tractiveBaseUrl } from "@/lib/tractive/api_utils";
@@ -83,16 +84,16 @@ export const Navbar: FC = () => {
       position="sticky"
     >
       <Toolbar>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{
-            flexGrow: 1,
-            fontSize: "2rem",
-          }}
+        <Button
+          sx={{ fontWeight: "bold", fontSize: "2rem" }}
+          color="inherit"
+          variant="text"
+          size="small"
+          LinkComponent={Link}
+          href="/"
         >
           Better Tractive
-        </Typography>
+        </Button>
 
         <Box sx={{ flexGrow: 1 }} />
 
@@ -103,6 +104,7 @@ export const Navbar: FC = () => {
                 key={index}
                 sx={{ fontWeight: "bold" }}
                 color="inherit"
+                LinkComponent={Link}
                 href={item.href}
               >
                 {item.children}

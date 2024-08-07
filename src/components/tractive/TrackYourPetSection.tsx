@@ -53,6 +53,8 @@ export const TrackYourPetSection: FC<IProps> = ({
         petId={petId}
         geofences={geofences}
         open={isFullScreenMapDialogOpen}
+        trackableObjectData={trackableObjectData}
+        devicePosReportData={devicePosReportData}
         onClose={() => setIsFullScreenMapDialogOpen(false)}
       />
       <CardHeader
