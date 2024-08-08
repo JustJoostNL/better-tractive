@@ -159,6 +159,7 @@ export default function PetPage() {
     trackableObjectError || trackerError || bulkError || leaderboardError;
 
   useMutateDebugState("trackableObject", trackableObjectData);
+  useMutateDebugState("petRecords", petRecordsData);
   useMutateDebugState("tracker", trackerData);
   useMutateDebugState("bulk", bulkData);
   useMutateDebugState("leaderboard", leaderbordData);
@@ -188,6 +189,7 @@ export default function PetPage() {
       <Root>
         <ManageTrackerSection
           trackableObjectData={trackableObjectData}
+          trackerData={trackerData}
           bulkData={bulkData}
           mutateBulkData={mutateBulkData}
         />

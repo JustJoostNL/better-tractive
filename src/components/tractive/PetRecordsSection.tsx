@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, useCallback } from "react";
 import {
   Card,
   CardHeader,
@@ -6,49 +6,24 @@ import {
   Stack,
   Typography,
   Box,
+  Divider,
 } from "@mui/material";
+import { Stat } from "../shared/Stat";
 import { IPetRecordsResponse } from "@/lib/tractive/api_types";
 
 interface IProps {
   petRecordsData: IPetRecordsResponse;
 }
 
-const Stat: FC<{ title: string; value: ReactNode | undefined }> = ({
-  title,
-  value,
-}) => {
-  if (value === undefined) return null;
-
-  return (
-    <Stack>
-      <Typography component="div" variant="body1" color="text.secondary">
-        {title}
-      </Typography>
-
-      <Typography
-        component="div"
-        variant="body1"
-        color="text.primary"
-        fontWeight={600}
-        sx={{
-          fontFeatureSettings: "'tnum' on, 'lnum' on",
-        }}
-      >
-        {value}
-      </Typography>
-    </Stack>
-  );
-};
-
 export const PetRecordsSection: FC<IProps> = ({ petRecordsData }) => {
+  const minutesToHM = useCallback((minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${hours}h ${remainingMinutes}m`;
+  }, []);
+
   return (
-    <Card
-      sx={{
-        width: "fit-content",
-        height: "fit-content",
-        marginBottom: 2,
-      }}
-    >
+    <Card sx={{ maxWidth: 350 }}>
       <CardHeader title="Records" subheader="View your pet's records" />
 
       <CardContent>
@@ -60,23 +35,25 @@ export const PetRecordsSection: FC<IProps> = ({ petRecordsData }) => {
 
             <Stack spacing={2}>
               <Stat
-                title="Average calories"
-                value={petRecordsData.averages.calories}
+                title="Calories"
+                value={petRecordsData.averages.calories + " kcal"}
               />
               <Stat
-                title="Average active minutes"
-                value={petRecordsData.averages.active}
+                title="Active time"
+                value={minutesToHM(petRecordsData.averages.active)}
               />
               <Stat
-                title="Resting minutes"
-                value={petRecordsData.averages.resting}
+                title="Resting time"
+                value={minutesToHM(petRecordsData.averages.resting)}
               />
               <Stat
-                title="Sleeping minutes"
-                value={petRecordsData.averages.sleeping}
+                title="Sleeping time"
+                value={minutesToHM(petRecordsData.averages.sleeping)}
               />
             </Stack>
           </Box>
+
+          <Divider orientation="vertical" flexItem />
 
           <Box>
             <Typography variant="h5" mb={1}>
@@ -86,7 +63,9 @@ export const PetRecordsSection: FC<IProps> = ({ petRecordsData }) => {
             <Stack spacing={2}>
               <Stat
                 title="Best day"
-                value={petRecordsData.records.best_day.minutes + " min"}
+                value={minutesToHM(
+                  petRecordsData.records.best_day.minutes ?? 0,
+                )}
               />
               <Stat
                 title="Longest streak"

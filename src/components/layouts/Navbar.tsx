@@ -85,7 +85,7 @@ export const Navbar: FC = () => {
     >
       <Toolbar>
         <Button
-          sx={{ fontWeight: "bold", fontSize: "2rem" }}
+          sx={{ fontWeight: "bold", fontSize: "2rem", pt: 0, pb: 0 }}
           color="inherit"
           variant="text"
           size="small"

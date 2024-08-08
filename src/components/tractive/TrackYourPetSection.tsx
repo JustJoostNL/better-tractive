@@ -80,29 +80,23 @@ export const TrackYourPetSection: FC<IProps> = ({
         }
       />
 
-      <CardContent
-        sx={{
-          width: "100%",
-          height: "400px",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <TractiveMap
-          geofences={geofences}
-          trackableObjectData={trackableObjectData}
-          devicePosReportData={devicePosReportData}
-        />
+      <CardContent>
+        <div style={{ height: 400 }}>
+          <TractiveMap
+            geofences={geofences}
+            trackableObjectData={trackableObjectData}
+            devicePosReportData={devicePosReportData}
+          />
+        </div>
 
-        <Stack direction="row" spacing={2} justifyContent="center" mt={5}>
-          <Button
-            startIcon={<OpenInNewRounded />}
-            variant="outlined"
-            onClick={() => setIsFullScreenMapDialogOpen(true)}
-          >
-            Full screen map
-          </Button>
-        </Stack>
+        <Button
+          startIcon={<OpenInNewRounded />}
+          variant="outlined"
+          onClick={() => setIsFullScreenMapDialogOpen(true)}
+          sx={{ mt: 2, width: "100%" }}
+        >
+          Full screen map
+        </Button>
       </CardContent>
     </Card>
   );
