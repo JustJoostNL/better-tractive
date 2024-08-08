@@ -97,6 +97,10 @@ export function petRecordsPath(petId: string) {
   return `/4/activity/${petId}/day/records`;
 }
 
+export function petActivityBadgesPath(petId: string) {
+  return `/3/pet/${petId}/activity_badges`;
+}
+
 export function requestExportPath(
   trackerId: string,
   timeFrom: number,

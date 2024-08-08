@@ -48,6 +48,7 @@ import {
   leaderbordPath,
   demoAuthUserPath,
   petRecordsPath,
+  petActivityBadgesPath,
 } from "./api_paths";
 
 export async function getAuthToken(
@@ -446,6 +447,26 @@ export async function getGeofences({
 
   if (!response.ok) {
     throw new TractiveApiError("Failed to get geofences", response);
+  }
+
+  const json = await response.json();
+  return json;
+}
+
+export async function getPetActivityBadges({
+  petId,
+  authToken,
+}: {
+  petId: string;
+  authToken: string;
+}): Promise<IObjectListResponse> {
+  const response = await fetch(
+    tractiveProxyUrl + petActivityBadgesPath(petId),
+    composeFetchOptions("GET", authToken),
+  );
+
+  if (!response.ok) {
+    throw new TractiveApiError("Failed to get pet activity badges", response);
   }
 
   const json = await response.json();

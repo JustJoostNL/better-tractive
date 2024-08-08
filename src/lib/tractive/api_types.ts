@@ -284,7 +284,7 @@ export interface BulkItem {
   coords?: Array<number[]>;
   radius?: number;
   trigger?: Trigger[];
-  active: boolean;
+  active?: boolean;
   home_flag?: boolean;
   deleted_at?: number | null;
   name?: string;
@@ -294,11 +294,35 @@ export interface BulkItem {
   entered_at?: number | null;
   device?: ObjectItem;
   _type: string;
+  achieved_at?: number | null;
+  celebrated_at?: number | null;
+  name_localizations?: Localizations;
+  description_localizations?: Localizations;
+  activity_badge_category_id?: string;
+  icon_url?: string;
+  sort_index?: number;
   started_at?: number | null;
   timeout?: number;
   remaining?: number;
   pending?: boolean;
   reconnecting?: boolean;
+}
+
+export interface Localizations {
+  en: string;
+  bg: string;
+  cs: string;
+  da: string;
+  de: string;
+  es: string;
+  fr: string;
+  hu: string;
+  it: string;
+  ja: string;
+  nl: string;
+  pl: string;
+  ru: string;
+  sv: string;
 }
 
 export enum Trigger {

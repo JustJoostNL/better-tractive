@@ -8,6 +8,7 @@ import {
   getDevicePosReport,
   getGeofences,
   getLeaderboard,
+  getPetActivityBadges,
   getPetRecords,
   getTrackableObject,
   getTracker,
@@ -20,6 +21,7 @@ import { formatErrorMessage, LeaderboardType } from "@/lib/tractive/api_utils";
 import { PetLeaderboardSection } from "@/components/tractive/PetLeaderboardSection";
 import { TrackYourPetSection } from "@/components/tractive/TrackYourPetSection";
 import { PetRecordsSection } from "@/components/tractive/PetRecordsSection";
+import { ActivityBadgesSection } from "@/components/tractive/ActivityBadgesSection";
 
 const Root = styled("div")(({ theme }) => ({
   display: "grid",
@@ -76,6 +78,25 @@ export default function PetPage() {
     swrOptions,
   );
 
+  const { data: activityBadgesData } = useSWR(
+    {
+      type: `activity_badges-${petId}`,
+      petId,
+      authToken: auth.token,
+    },
+    getPetActivityBadges,
+    swrOptions,
+  );
+
+  const activityBadges = useMemo(
+    () =>
+      activityBadgesData?.map(({ _id }) => ({
+        id: _id,
+        type: "activity_badge",
+      })),
+    [activityBadgesData],
+  );
+
   const { data: geofencesData } = useSWR(
     {
       type: `geofence-${trackerId}`,
@@ -116,6 +137,7 @@ export default function PetPage() {
           type: "tracker_command_state",
         },
         ...(geofences ?? []),
+        ...(activityBadges ?? []),
       ],
       authToken: auth.token,
     },
@@ -160,6 +182,7 @@ export default function PetPage() {
 
   useMutateDebugState("trackableObject", trackableObjectData);
   useMutateDebugState("petRecords", petRecordsData);
+  useMutateDebugState("activityBadges", activityBadgesData);
   useMutateDebugState("tracker", trackerData);
   useMutateDebugState("bulk", bulkData);
   useMutateDebugState("leaderboard", leaderbordData);
@@ -203,8 +226,11 @@ export default function PetPage() {
 
         <PetRecordsSection petRecordsData={petRecordsData} />
 
+        <ActivityBadgesSection bulkData={bulkData} />
+
         <PetLeaderboardSection
           leaderboardData={leaderbordData}
+          trackableObjectData={trackableObjectData}
           selectedLeaderboardType={selectedLeaderboardType}
           setSelectedLeaderboardType={setSelectedLeaderboardType}
         />
