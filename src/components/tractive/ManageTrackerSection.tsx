@@ -80,7 +80,7 @@ export const ManageTrackerSection: FC<IProps> = ({
             title="Charging"
             value={trackerData.charging_state === "CHARGING" ? "Yes" : "No"}
           />
-          <Stat title="Battery" value={trackerData.battery_state} />
+          <Stat title="Battery state" value={trackerData.battery_state} />
           <Stat
             title="Power saving"
             value={trackerData.state_reason === "POWER_SAVING" ? "Yes" : "No"}

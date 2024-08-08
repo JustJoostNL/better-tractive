@@ -11,6 +11,7 @@ import {
 import { FC, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { InfoRounded, OpenInNewRounded } from "@mui/icons-material";
+import { RelativeTimeAgo } from "../shared/RelativeTimeAgo";
 import { FullScreenMapDialog } from "./FullScreenMapDialog";
 import {
   IBulkResponse,
@@ -69,9 +70,12 @@ export const TrackYourPetSection: FC<IProps> = ({
               <Tooltip
                 arrow
                 placement="right"
-                title={`Last updated at ${new Date(
-                  devicePosReportData.time_rcvd * 1000,
-                ).toLocaleString()}`}
+                title={
+                  <>
+                    Last updated{" "}
+                    <RelativeTimeAgo value={devicePosReportData.time_rcvd} />
+                  </>
+                }
               >
                 <InfoRounded color="primary" />
               </Tooltip>

@@ -1,6 +1,6 @@
 import React, { FC } from "react";
-import { Circle, Polygon } from "react-leaflet";
-import { LatLngExpression } from "leaflet";
+import { Circle, Polygon, Rectangle } from "react-leaflet";
+import { LatLngBoundsExpression, LatLngExpression } from "leaflet";
 import { BulkItem } from "@/lib/tractive/api_types";
 
 interface IProps {
@@ -27,7 +27,14 @@ export const MapGeofence: FC<IProps> = ({ geofence }) => {
     );
   }
 
-  //TODO add support for RECTANGLE
+  if (geofence.shape === "RECTANGLE") {
+    return (
+      <Rectangle
+        bounds={geofence.coords as LatLngBoundsExpression}
+        pathOptions={{ color }}
+      />
+    );
+  }
 
   if (geofence.shape === "POLYGON") {
     return (
