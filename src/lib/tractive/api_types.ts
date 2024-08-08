@@ -115,7 +115,6 @@ export interface IAuthTokenResponse {
   detail?: string | null;
 }
 
-//object list is either a tracker list of trackable object list
 export type IObjectListResponse = ObjectItem[];
 export interface ObjectItem {
   _id: string;

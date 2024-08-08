@@ -10,12 +10,12 @@ interface IProps {
 export const ActivityBadgeItem: FC<IProps> = ({ bulkItem }) => {
   return (
     <ListItem
-      disabled={!bulkItem.achieved_at}
       sx={{
         alignItems: "flex-start",
         "&:nth-of-type(odd)": {
           backgroundColor: "rgba(0, 0, 0, 0.2)",
         },
+        opacity: bulkItem.achieved_at ? 1 : 0.3,
       }}
     >
       {bulkItem.icon_url && (
